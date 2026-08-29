@@ -51,7 +51,11 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
-  User: 'User'
+  User: 'User',
+  RefreshToken: 'RefreshToken',
+  Address: 'Address',
+  Delivery: 'Delivery',
+  DeliveryStatusHistory: 'DeliveryStatusHistory'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -74,10 +78,71 @@ export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
   email: 'email',
-  createdAt: 'createdAt'
+  password: 'password',
+  phone: 'phone',
+  role: 'role',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const RefreshTokenScalarFieldEnum = {
+  id: 'id',
+  tokenHash: 'tokenHash',
+  userId: 'userId',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
+
+
+export const AddressScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  phone: 'phone',
+  addressLine: 'addressLine',
+  city: 'city',
+  postalCode: 'postalCode',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AddressScalarFieldEnum = (typeof AddressScalarFieldEnum)[keyof typeof AddressScalarFieldEnum]
+
+
+export const DeliveryScalarFieldEnum = {
+  id: 'id',
+  trackingId: 'trackingId',
+  customerId: 'customerId',
+  agentId: 'agentId',
+  pickupAddressId: 'pickupAddressId',
+  deliveryAddressId: 'deliveryAddressId',
+  parcelType: 'parcelType',
+  weight: 'weight',
+  deliveryCharge: 'deliveryCharge',
+  codAmount: 'codAmount',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type DeliveryScalarFieldEnum = (typeof DeliveryScalarFieldEnum)[keyof typeof DeliveryScalarFieldEnum]
+
+
+export const DeliveryStatusHistoryScalarFieldEnum = {
+  id: 'id',
+  deliveryId: 'deliveryId',
+  status: 'status',
+  note: 'note',
+  updatedBy: 'updatedBy',
+  createdAt: 'createdAt'
+} as const
+
+export type DeliveryStatusHistoryScalarFieldEnum = (typeof DeliveryStatusHistoryScalarFieldEnum)[keyof typeof DeliveryStatusHistoryScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -94,4 +159,12 @@ export const QueryMode = {
 } as const
 
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

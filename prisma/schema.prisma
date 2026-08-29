@@ -21,9 +21,111 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserRole {
+  CUSTOMER
+  AGENT
+  ADMIN
+}
+
+enum DeliveryStatus {
+  PENDING
+  ASSIGNED
+  PICKED_UP
+  IN_TRANSIT
+  OUT_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  FAILED
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   name      String
   email     String   @unique
+  password  String
+  phone     String   @unique
+  role      UserRole @default(CUSTOMER)
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customerDeliveries Delivery[]              @relation("CustomerDeliveries")
+  agentDeliveries    Delivery[]              @relation("AgentDeliveries")
+  refreshTokens      RefreshToken[]
+  statusUpdates      DeliveryStatusHistory[] @relation("StatusUpdatedBy")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Address {
+  id          String   @id @default(uuid())
+  name        String
+  phone       String
+  addressLine String
+  city        String
+  postalCode  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  pickupDeliveries   Delivery[] @relation("PickupAddress")
+  deliveryDeliveries Delivery[] @relation("DeliveryAddress")
+}
+
+model Delivery {
+  id         String @id @default(uuid())
+  trackingId String @unique
+
+  customerId        String
+  agentId           String?
+  pickupAddressId   String
+  deliveryAddressId String
+
+  parcelType     String
+  weight         Decimal @db.Decimal(10, 2)
+  deliveryCharge Decimal @db.Decimal(10, 2)
+  codAmount      Decimal @default(0) @db.Decimal(10, 2)
+
+  status DeliveryStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer User  @relation("CustomerDeliveries", fields: [customerId], references: [id])
+  agent    User? @relation("AgentDeliveries", fields: [agentId], references: [id])
+
+  pickupAddress   Address @relation("PickupAddress", fields: [pickupAddressId], references: [id])
+  deliveryAddress Address @relation("DeliveryAddress", fields: [deliveryAddressId], references: [id])
+
+  statusHistory DeliveryStatusHistory[]
+
+  @@index([customerId])
+  @@index([agentId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model DeliveryStatusHistory {
+  id         String         @id @default(uuid())
+  deliveryId String
+  status     DeliveryStatus
+  note       String?
+  updatedBy  String
+  createdAt  DateTime       @default(now())
+
+  delivery Delivery @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  user     User     @relation("StatusUpdatedBy", fields: [updatedBy], references: [id])
+
+  @@index([deliveryId])
+  @@index([updatedBy])
+  @@index([createdAt])
 }
