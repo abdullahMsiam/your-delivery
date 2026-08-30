@@ -1,8 +1,13 @@
 import { Request, Response } from "express";
 import { userService } from "./user.service.js";
+import AppError from "../../utils/AppError.js";
 
 const getUsers = async (req: Request, res: Response) => {
   const users = await userService.getUsers();
+
+  if (!users.length) {
+    throw new AppError(404, "No user found");
+  }
 
   res.status(200).json({
     success: true,
