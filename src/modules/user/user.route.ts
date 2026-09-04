@@ -6,4 +6,4 @@ const router = Router();
 
 router.get("/", asyncHandler(userController.getUsers));
 
-export default router;
+export { router as userRouter };
