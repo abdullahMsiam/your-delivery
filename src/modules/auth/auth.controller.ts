@@ -42,8 +42,17 @@ const getMe = async (req: AuthenticatedRequest, res: Response) => {
   });
 };
 
+// temporary:
+const adminTest = async (_req: AuthenticatedRequest, res: Response) => {
+  res.status(200).json({
+    success: true,
+    message: "Welcome Admin",
+  });
+};
+
 export const authController = {
   register,
   login,
   getMe,
+  adminTest,
 };
