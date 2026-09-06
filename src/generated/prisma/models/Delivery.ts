@@ -293,6 +293,7 @@ export type DeliveryWhereInput = {
   pickupAddress?: Prisma.XOR<Prisma.AddressScalarRelationFilter, Prisma.AddressWhereInput>
   deliveryAddress?: Prisma.XOR<Prisma.AddressScalarRelationFilter, Prisma.AddressWhereInput>
   statusHistory?: Prisma.DeliveryStatusHistoryListRelationFilter
+  payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
 }
 
 export type DeliveryOrderByWithRelationInput = {
@@ -314,6 +315,7 @@ export type DeliveryOrderByWithRelationInput = {
   pickupAddress?: Prisma.AddressOrderByWithRelationInput
   deliveryAddress?: Prisma.AddressOrderByWithRelationInput
   statusHistory?: Prisma.DeliveryStatusHistoryOrderByRelationAggregateInput
+  payment?: Prisma.PaymentOrderByWithRelationInput
 }
 
 export type DeliveryWhereUniqueInput = Prisma.AtLeast<{
@@ -338,6 +340,7 @@ export type DeliveryWhereUniqueInput = Prisma.AtLeast<{
   pickupAddress?: Prisma.XOR<Prisma.AddressScalarRelationFilter, Prisma.AddressWhereInput>
   deliveryAddress?: Prisma.XOR<Prisma.AddressScalarRelationFilter, Prisma.AddressWhereInput>
   statusHistory?: Prisma.DeliveryStatusHistoryListRelationFilter
+  payment?: Prisma.XOR<Prisma.PaymentNullableScalarRelationFilter, Prisma.PaymentWhereInput> | null
 }, "id" | "trackingId">
 
 export type DeliveryOrderByWithAggregationInput = {
@@ -395,6 +398,7 @@ export type DeliveryCreateInput = {
   pickupAddress: Prisma.AddressCreateNestedOneWithoutPickupDeliveriesInput
   deliveryAddress: Prisma.AddressCreateNestedOneWithoutDeliveryDeliveriesInput
   statusHistory?: Prisma.DeliveryStatusHistoryCreateNestedManyWithoutDeliveryInput
+  payment?: Prisma.PaymentCreateNestedOneWithoutDeliveryInput
 }
 
 export type DeliveryUncheckedCreateInput = {
@@ -412,6 +416,7 @@ export type DeliveryUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   statusHistory?: Prisma.DeliveryStatusHistoryUncheckedCreateNestedManyWithoutDeliveryInput
+  payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutDeliveryInput
 }
 
 export type DeliveryUpdateInput = {
@@ -429,6 +434,7 @@ export type DeliveryUpdateInput = {
   pickupAddress?: Prisma.AddressUpdateOneRequiredWithoutPickupDeliveriesNestedInput
   deliveryAddress?: Prisma.AddressUpdateOneRequiredWithoutDeliveryDeliveriesNestedInput
   statusHistory?: Prisma.DeliveryStatusHistoryUpdateManyWithoutDeliveryNestedInput
+  payment?: Prisma.PaymentUpdateOneWithoutDeliveryNestedInput
 }
 
 export type DeliveryUncheckedUpdateInput = {
@@ -446,6 +452,7 @@ export type DeliveryUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   statusHistory?: Prisma.DeliveryStatusHistoryUncheckedUpdateManyWithoutDeliveryNestedInput
+  payment?: Prisma.PaymentUncheckedUpdateOneWithoutDeliveryNestedInput
 }
 
 export type DeliveryCreateManyInput = {
@@ -765,6 +772,20 @@ export type DeliveryUpdateOneRequiredWithoutStatusHistoryNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.DeliveryUpdateToOneWithWhereWithoutStatusHistoryInput, Prisma.DeliveryUpdateWithoutStatusHistoryInput>, Prisma.DeliveryUncheckedUpdateWithoutStatusHistoryInput>
 }
 
+export type DeliveryCreateNestedOneWithoutPaymentInput = {
+  create?: Prisma.XOR<Prisma.DeliveryCreateWithoutPaymentInput, Prisma.DeliveryUncheckedCreateWithoutPaymentInput>
+  connectOrCreate?: Prisma.DeliveryCreateOrConnectWithoutPaymentInput
+  connect?: Prisma.DeliveryWhereUniqueInput
+}
+
+export type DeliveryUpdateOneRequiredWithoutPaymentNestedInput = {
+  create?: Prisma.XOR<Prisma.DeliveryCreateWithoutPaymentInput, Prisma.DeliveryUncheckedCreateWithoutPaymentInput>
+  connectOrCreate?: Prisma.DeliveryCreateOrConnectWithoutPaymentInput
+  upsert?: Prisma.DeliveryUpsertWithoutPaymentInput
+  connect?: Prisma.DeliveryWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DeliveryUpdateToOneWithWhereWithoutPaymentInput, Prisma.DeliveryUpdateWithoutPaymentInput>, Prisma.DeliveryUncheckedUpdateWithoutPaymentInput>
+}
+
 export type DeliveryCreateWithoutCustomerInput = {
   id?: string
   trackingId: string
@@ -779,6 +800,7 @@ export type DeliveryCreateWithoutCustomerInput = {
   pickupAddress: Prisma.AddressCreateNestedOneWithoutPickupDeliveriesInput
   deliveryAddress: Prisma.AddressCreateNestedOneWithoutDeliveryDeliveriesInput
   statusHistory?: Prisma.DeliveryStatusHistoryCreateNestedManyWithoutDeliveryInput
+  payment?: Prisma.PaymentCreateNestedOneWithoutDeliveryInput
 }
 
 export type DeliveryUncheckedCreateWithoutCustomerInput = {
@@ -795,6 +817,7 @@ export type DeliveryUncheckedCreateWithoutCustomerInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   statusHistory?: Prisma.DeliveryStatusHistoryUncheckedCreateNestedManyWithoutDeliveryInput
+  payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutDeliveryInput
 }
 
 export type DeliveryCreateOrConnectWithoutCustomerInput = {
@@ -821,6 +844,7 @@ export type DeliveryCreateWithoutAgentInput = {
   pickupAddress: Prisma.AddressCreateNestedOneWithoutPickupDeliveriesInput
   deliveryAddress: Prisma.AddressCreateNestedOneWithoutDeliveryDeliveriesInput
   statusHistory?: Prisma.DeliveryStatusHistoryCreateNestedManyWithoutDeliveryInput
+  payment?: Prisma.PaymentCreateNestedOneWithoutDeliveryInput
 }
 
 export type DeliveryUncheckedCreateWithoutAgentInput = {
@@ -837,6 +861,7 @@ export type DeliveryUncheckedCreateWithoutAgentInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   statusHistory?: Prisma.DeliveryStatusHistoryUncheckedCreateNestedManyWithoutDeliveryInput
+  payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutDeliveryInput
 }
 
 export type DeliveryCreateOrConnectWithoutAgentInput = {
@@ -914,6 +939,7 @@ export type DeliveryCreateWithoutPickupAddressInput = {
   agent?: Prisma.UserCreateNestedOneWithoutAgentDeliveriesInput
   deliveryAddress: Prisma.AddressCreateNestedOneWithoutDeliveryDeliveriesInput
   statusHistory?: Prisma.DeliveryStatusHistoryCreateNestedManyWithoutDeliveryInput
+  payment?: Prisma.PaymentCreateNestedOneWithoutDeliveryInput
 }
 
 export type DeliveryUncheckedCreateWithoutPickupAddressInput = {
@@ -930,6 +956,7 @@ export type DeliveryUncheckedCreateWithoutPickupAddressInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   statusHistory?: Prisma.DeliveryStatusHistoryUncheckedCreateNestedManyWithoutDeliveryInput
+  payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutDeliveryInput
 }
 
 export type DeliveryCreateOrConnectWithoutPickupAddressInput = {
@@ -956,6 +983,7 @@ export type DeliveryCreateWithoutDeliveryAddressInput = {
   agent?: Prisma.UserCreateNestedOneWithoutAgentDeliveriesInput
   pickupAddress: Prisma.AddressCreateNestedOneWithoutPickupDeliveriesInput
   statusHistory?: Prisma.DeliveryStatusHistoryCreateNestedManyWithoutDeliveryInput
+  payment?: Prisma.PaymentCreateNestedOneWithoutDeliveryInput
 }
 
 export type DeliveryUncheckedCreateWithoutDeliveryAddressInput = {
@@ -972,6 +1000,7 @@ export type DeliveryUncheckedCreateWithoutDeliveryAddressInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   statusHistory?: Prisma.DeliveryStatusHistoryUncheckedCreateNestedManyWithoutDeliveryInput
+  payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutDeliveryInput
 }
 
 export type DeliveryCreateOrConnectWithoutDeliveryAddressInput = {
@@ -1030,6 +1059,7 @@ export type DeliveryCreateWithoutStatusHistoryInput = {
   agent?: Prisma.UserCreateNestedOneWithoutAgentDeliveriesInput
   pickupAddress: Prisma.AddressCreateNestedOneWithoutPickupDeliveriesInput
   deliveryAddress: Prisma.AddressCreateNestedOneWithoutDeliveryDeliveriesInput
+  payment?: Prisma.PaymentCreateNestedOneWithoutDeliveryInput
 }
 
 export type DeliveryUncheckedCreateWithoutStatusHistoryInput = {
@@ -1046,6 +1076,7 @@ export type DeliveryUncheckedCreateWithoutStatusHistoryInput = {
   status?: $Enums.DeliveryStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  payment?: Prisma.PaymentUncheckedCreateNestedOneWithoutDeliveryInput
 }
 
 export type DeliveryCreateOrConnectWithoutStatusHistoryInput = {
@@ -1078,6 +1109,7 @@ export type DeliveryUpdateWithoutStatusHistoryInput = {
   agent?: Prisma.UserUpdateOneWithoutAgentDeliveriesNestedInput
   pickupAddress?: Prisma.AddressUpdateOneRequiredWithoutPickupDeliveriesNestedInput
   deliveryAddress?: Prisma.AddressUpdateOneRequiredWithoutDeliveryDeliveriesNestedInput
+  payment?: Prisma.PaymentUpdateOneWithoutDeliveryNestedInput
 }
 
 export type DeliveryUncheckedUpdateWithoutStatusHistoryInput = {
@@ -1094,6 +1126,91 @@ export type DeliveryUncheckedUpdateWithoutStatusHistoryInput = {
   status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  payment?: Prisma.PaymentUncheckedUpdateOneWithoutDeliveryNestedInput
+}
+
+export type DeliveryCreateWithoutPaymentInput = {
+  id?: string
+  trackingId: string
+  parcelType: string
+  weight: runtime.Decimal | runtime.DecimalJsLike | number | string
+  deliveryCharge: runtime.Decimal | runtime.DecimalJsLike | number | string
+  codAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.DeliveryStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  customer: Prisma.UserCreateNestedOneWithoutCustomerDeliveriesInput
+  agent?: Prisma.UserCreateNestedOneWithoutAgentDeliveriesInput
+  pickupAddress: Prisma.AddressCreateNestedOneWithoutPickupDeliveriesInput
+  deliveryAddress: Prisma.AddressCreateNestedOneWithoutDeliveryDeliveriesInput
+  statusHistory?: Prisma.DeliveryStatusHistoryCreateNestedManyWithoutDeliveryInput
+}
+
+export type DeliveryUncheckedCreateWithoutPaymentInput = {
+  id?: string
+  trackingId: string
+  customerId: string
+  agentId?: string | null
+  pickupAddressId: string
+  deliveryAddressId: string
+  parcelType: string
+  weight: runtime.Decimal | runtime.DecimalJsLike | number | string
+  deliveryCharge: runtime.Decimal | runtime.DecimalJsLike | number | string
+  codAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: $Enums.DeliveryStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  statusHistory?: Prisma.DeliveryStatusHistoryUncheckedCreateNestedManyWithoutDeliveryInput
+}
+
+export type DeliveryCreateOrConnectWithoutPaymentInput = {
+  where: Prisma.DeliveryWhereUniqueInput
+  create: Prisma.XOR<Prisma.DeliveryCreateWithoutPaymentInput, Prisma.DeliveryUncheckedCreateWithoutPaymentInput>
+}
+
+export type DeliveryUpsertWithoutPaymentInput = {
+  update: Prisma.XOR<Prisma.DeliveryUpdateWithoutPaymentInput, Prisma.DeliveryUncheckedUpdateWithoutPaymentInput>
+  create: Prisma.XOR<Prisma.DeliveryCreateWithoutPaymentInput, Prisma.DeliveryUncheckedCreateWithoutPaymentInput>
+  where?: Prisma.DeliveryWhereInput
+}
+
+export type DeliveryUpdateToOneWithWhereWithoutPaymentInput = {
+  where?: Prisma.DeliveryWhereInput
+  data: Prisma.XOR<Prisma.DeliveryUpdateWithoutPaymentInput, Prisma.DeliveryUncheckedUpdateWithoutPaymentInput>
+}
+
+export type DeliveryUpdateWithoutPaymentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  trackingId?: Prisma.StringFieldUpdateOperationsInput | string
+  parcelType?: Prisma.StringFieldUpdateOperationsInput | string
+  weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  deliveryCharge?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  codAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customer?: Prisma.UserUpdateOneRequiredWithoutCustomerDeliveriesNestedInput
+  agent?: Prisma.UserUpdateOneWithoutAgentDeliveriesNestedInput
+  pickupAddress?: Prisma.AddressUpdateOneRequiredWithoutPickupDeliveriesNestedInput
+  deliveryAddress?: Prisma.AddressUpdateOneRequiredWithoutDeliveryDeliveriesNestedInput
+  statusHistory?: Prisma.DeliveryStatusHistoryUpdateManyWithoutDeliveryNestedInput
+}
+
+export type DeliveryUncheckedUpdateWithoutPaymentInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  trackingId?: Prisma.StringFieldUpdateOperationsInput | string
+  customerId?: Prisma.StringFieldUpdateOperationsInput | string
+  agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  pickupAddressId?: Prisma.StringFieldUpdateOperationsInput | string
+  deliveryAddressId?: Prisma.StringFieldUpdateOperationsInput | string
+  parcelType?: Prisma.StringFieldUpdateOperationsInput | string
+  weight?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  deliveryCharge?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  codAmount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  status?: Prisma.EnumDeliveryStatusFieldUpdateOperationsInput | $Enums.DeliveryStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  statusHistory?: Prisma.DeliveryStatusHistoryUncheckedUpdateManyWithoutDeliveryNestedInput
 }
 
 export type DeliveryCreateManyCustomerInput = {
@@ -1140,6 +1257,7 @@ export type DeliveryUpdateWithoutCustomerInput = {
   pickupAddress?: Prisma.AddressUpdateOneRequiredWithoutPickupDeliveriesNestedInput
   deliveryAddress?: Prisma.AddressUpdateOneRequiredWithoutDeliveryDeliveriesNestedInput
   statusHistory?: Prisma.DeliveryStatusHistoryUpdateManyWithoutDeliveryNestedInput
+  payment?: Prisma.PaymentUpdateOneWithoutDeliveryNestedInput
 }
 
 export type DeliveryUncheckedUpdateWithoutCustomerInput = {
@@ -1156,6 +1274,7 @@ export type DeliveryUncheckedUpdateWithoutCustomerInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   statusHistory?: Prisma.DeliveryStatusHistoryUncheckedUpdateManyWithoutDeliveryNestedInput
+  payment?: Prisma.PaymentUncheckedUpdateOneWithoutDeliveryNestedInput
 }
 
 export type DeliveryUncheckedUpdateManyWithoutCustomerInput = {
@@ -1187,6 +1306,7 @@ export type DeliveryUpdateWithoutAgentInput = {
   pickupAddress?: Prisma.AddressUpdateOneRequiredWithoutPickupDeliveriesNestedInput
   deliveryAddress?: Prisma.AddressUpdateOneRequiredWithoutDeliveryDeliveriesNestedInput
   statusHistory?: Prisma.DeliveryStatusHistoryUpdateManyWithoutDeliveryNestedInput
+  payment?: Prisma.PaymentUpdateOneWithoutDeliveryNestedInput
 }
 
 export type DeliveryUncheckedUpdateWithoutAgentInput = {
@@ -1203,6 +1323,7 @@ export type DeliveryUncheckedUpdateWithoutAgentInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   statusHistory?: Prisma.DeliveryStatusHistoryUncheckedUpdateManyWithoutDeliveryNestedInput
+  payment?: Prisma.PaymentUncheckedUpdateOneWithoutDeliveryNestedInput
 }
 
 export type DeliveryUncheckedUpdateManyWithoutAgentInput = {
@@ -1264,6 +1385,7 @@ export type DeliveryUpdateWithoutPickupAddressInput = {
   agent?: Prisma.UserUpdateOneWithoutAgentDeliveriesNestedInput
   deliveryAddress?: Prisma.AddressUpdateOneRequiredWithoutDeliveryDeliveriesNestedInput
   statusHistory?: Prisma.DeliveryStatusHistoryUpdateManyWithoutDeliveryNestedInput
+  payment?: Prisma.PaymentUpdateOneWithoutDeliveryNestedInput
 }
 
 export type DeliveryUncheckedUpdateWithoutPickupAddressInput = {
@@ -1280,6 +1402,7 @@ export type DeliveryUncheckedUpdateWithoutPickupAddressInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   statusHistory?: Prisma.DeliveryStatusHistoryUncheckedUpdateManyWithoutDeliveryNestedInput
+  payment?: Prisma.PaymentUncheckedUpdateOneWithoutDeliveryNestedInput
 }
 
 export type DeliveryUncheckedUpdateManyWithoutPickupAddressInput = {
@@ -1311,6 +1434,7 @@ export type DeliveryUpdateWithoutDeliveryAddressInput = {
   agent?: Prisma.UserUpdateOneWithoutAgentDeliveriesNestedInput
   pickupAddress?: Prisma.AddressUpdateOneRequiredWithoutPickupDeliveriesNestedInput
   statusHistory?: Prisma.DeliveryStatusHistoryUpdateManyWithoutDeliveryNestedInput
+  payment?: Prisma.PaymentUpdateOneWithoutDeliveryNestedInput
 }
 
 export type DeliveryUncheckedUpdateWithoutDeliveryAddressInput = {
@@ -1327,6 +1451,7 @@ export type DeliveryUncheckedUpdateWithoutDeliveryAddressInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   statusHistory?: Prisma.DeliveryStatusHistoryUncheckedUpdateManyWithoutDeliveryNestedInput
+  payment?: Prisma.PaymentUncheckedUpdateOneWithoutDeliveryNestedInput
 }
 
 export type DeliveryUncheckedUpdateManyWithoutDeliveryAddressInput = {
@@ -1394,6 +1519,7 @@ export type DeliverySelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   pickupAddress?: boolean | Prisma.AddressDefaultArgs<ExtArgs>
   deliveryAddress?: boolean | Prisma.AddressDefaultArgs<ExtArgs>
   statusHistory?: boolean | Prisma.Delivery$statusHistoryArgs<ExtArgs>
+  payment?: boolean | Prisma.Delivery$paymentArgs<ExtArgs>
   _count?: boolean | Prisma.DeliveryCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["delivery"]>
 
@@ -1460,6 +1586,7 @@ export type DeliveryInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   pickupAddress?: boolean | Prisma.AddressDefaultArgs<ExtArgs>
   deliveryAddress?: boolean | Prisma.AddressDefaultArgs<ExtArgs>
   statusHistory?: boolean | Prisma.Delivery$statusHistoryArgs<ExtArgs>
+  payment?: boolean | Prisma.Delivery$paymentArgs<ExtArgs>
   _count?: boolean | Prisma.DeliveryCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type DeliveryIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1483,6 +1610,7 @@ export type $DeliveryPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     pickupAddress: Prisma.$AddressPayload<ExtArgs>
     deliveryAddress: Prisma.$AddressPayload<ExtArgs>
     statusHistory: Prisma.$DeliveryStatusHistoryPayload<ExtArgs>[]
+    payment: Prisma.$PaymentPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1897,6 +2025,7 @@ export interface Prisma__DeliveryClient<T, Null = never, ExtArgs extends runtime
   pickupAddress<T extends Prisma.AddressDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AddressDefaultArgs<ExtArgs>>): Prisma.Prisma__AddressClient<runtime.Types.Result.GetResult<Prisma.$AddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   deliveryAddress<T extends Prisma.AddressDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AddressDefaultArgs<ExtArgs>>): Prisma.Prisma__AddressClient<runtime.Types.Result.GetResult<Prisma.$AddressPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   statusHistory<T extends Prisma.Delivery$statusHistoryArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Delivery$statusHistoryArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeliveryStatusHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  payment<T extends Prisma.Delivery$paymentArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Delivery$paymentArgs<ExtArgs>>): Prisma.Prisma__PaymentClient<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2380,6 +2509,25 @@ export type Delivery$statusHistoryArgs<ExtArgs extends runtime.Types.Extensions.
   take?: number
   skip?: number
   distinct?: Prisma.DeliveryStatusHistoryScalarFieldEnum | Prisma.DeliveryStatusHistoryScalarFieldEnum[]
+}
+
+/**
+ * Delivery.payment
+ */
+export type Delivery$paymentArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
 }
 
 /**

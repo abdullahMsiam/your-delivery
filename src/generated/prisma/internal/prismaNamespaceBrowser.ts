@@ -55,7 +55,8 @@ export const ModelName = {
   RefreshToken: 'RefreshToken',
   Address: 'Address',
   Delivery: 'Delivery',
-  DeliveryStatusHistory: 'DeliveryStatusHistory'
+  DeliveryStatusHistory: 'DeliveryStatusHistory',
+  Payment: 'Payment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -143,6 +144,22 @@ export const DeliveryStatusHistoryScalarFieldEnum = {
 } as const
 
 export type DeliveryStatusHistoryScalarFieldEnum = (typeof DeliveryStatusHistoryScalarFieldEnum)[keyof typeof DeliveryStatusHistoryScalarFieldEnum]
+
+
+export const PaymentScalarFieldEnum = {
+  id: 'id',
+  deliveryId: 'deliveryId',
+  method: 'method',
+  status: 'status',
+  amount: 'amount',
+  stripePaymentId: 'stripePaymentId',
+  stripeClientSecret: 'stripeClientSecret',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentScalarFieldEnum = (typeof PaymentScalarFieldEnum)[keyof typeof PaymentScalarFieldEnum]
 
 
 export const SortOrder = {

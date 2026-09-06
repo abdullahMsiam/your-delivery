@@ -42,3 +42,8 @@ export type Delivery = Prisma.DeliveryModel
  * 
  */
 export type DeliveryStatusHistory = Prisma.DeliveryStatusHistoryModel
+/**
+ * Model Payment
+ * 
+ */
+export type Payment = Prisma.PaymentModel

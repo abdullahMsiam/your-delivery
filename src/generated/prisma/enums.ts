@@ -30,3 +30,23 @@ export const DeliveryStatus = {
 } as const
 
 export type DeliveryStatus = (typeof DeliveryStatus)[keyof typeof DeliveryStatus]
+
+
+export const PaymentMethod = {
+  STRIPE: 'STRIPE',
+  COD: 'COD'
+} as const
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
+
+
+export const PaymentStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  PAID: 'PAID',
+  FAILED: 'FAILED',
+  CANCELLED: 'CANCELLED',
+  REFUNDED: 'REFUNDED'
+} as const
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]

@@ -1,17 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
-// generator client {
-//   provider = "prisma-client"
-//   output   = "../generated/prisma"
-// }
-
-// datasource db {
-//   provider = "postgresql"
-// }
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -36,6 +22,20 @@ enum DeliveryStatus {
   DELIVERED
   CANCELLED
   FAILED
+}
+
+enum PaymentMethod {
+  STRIPE
+  COD
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  PAID
+  FAILED
+  CANCELLED
+  REFUNDED
 }
 
 model User {
@@ -107,6 +107,7 @@ model Delivery {
   deliveryAddress Address @relation("DeliveryAddress", fields: [deliveryAddressId], references: [id])
 
   statusHistory DeliveryStatusHistory[]
+  payment       Payment?
 
   @@index([customerId])
   @@index([agentId])
@@ -128,4 +129,28 @@ model DeliveryStatusHistory {
   @@index([deliveryId])
   @@index([updatedBy])
   @@index([createdAt])
+}
+
+model Payment {
+  id String @id @default(uuid())
+
+  deliveryId String @unique
+
+  method PaymentMethod
+  status PaymentStatus @default(PENDING)
+
+  amount Decimal @db.Decimal(10, 2)
+
+  stripePaymentId    String? @unique
+  stripeClientSecret String?
+
+  paidAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  delivery Delivery @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([method])
 }
