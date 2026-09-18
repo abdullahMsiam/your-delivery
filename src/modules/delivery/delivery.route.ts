@@ -15,4 +15,23 @@ router.post(
   asyncHandler(deliveryController.createDelivery),
 );
 
+router.get(
+  "/my-deliveries",
+  auth,
+  authorize("CUSTOMER"),
+  asyncHandler(deliveryController.getMyDeliveries),
+);
+
+router.get(
+  "/:id",
+  auth,
+  authorize("CUSTOMER"),
+  asyncHandler(deliveryController.getMyDeliveryById),
+);
+
+router.get(
+  "/track/:trackingId",
+  asyncHandler(deliveryController.trackDelivery),
+);
+
 export const deliveryRouter = router;

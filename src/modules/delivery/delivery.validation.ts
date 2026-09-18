@@ -28,4 +28,11 @@ export const createDeliverySchema = z.object({
   paymentMethod: z.enum(["STRIPE", "COD"]),
 });
 
+export const myDeliveriesQuerySchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+
+  limit: z.coerce.number().int().positive().max(50).default(10),
+});
+
+export type MyDeliveriesQueryInput = z.infer<typeof myDeliveriesQuerySchema>;
 export type CreateDeliveryInput = z.infer<typeof createDeliverySchema>;
