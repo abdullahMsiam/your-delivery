@@ -1,0 +1,31 @@
+import z from "zod";
+
+const addressSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 charecter"),
+  phone: z.string().min(10, "Phone number must be at least 10 digits"),
+  addressLine: z.string().min(5, "Address must be at least 5 charecter"),
+  city: z.string().min(2, "City must be at least 2 charecter"),
+  postalCode: z.string().min(3, "Postal code required"),
+});
+
+export const createDeliverySchema = z.object({
+  pickupAddress: addressSchema,
+
+  deliveryAddress: addressSchema,
+
+  parcelType: z.string().min(2, "Parcel type is required"),
+
+  weight: z.number().positive("Weight must be greater than 0"),
+
+  deliveryCharge: z.number().nonnegative("Delivery charge cannot be negative"),
+
+  codAmount: z
+    .number()
+    .nonnegative("COD amount cannot be negative")
+    .optional()
+    .default(0),
+
+  paymentMethod: z.enum(["STRIPE", "COD"]),
+});
+
+export type CreateDeliveryInput = z.infer<typeof createDeliverySchema>;

@@ -3,6 +3,7 @@ import { prisma } from "./lib/prisma.js";
 import { userRouter } from "./modules/user/user.route.js";
 import { globalErrorHandler } from "./middlewares/error.middleware.js";
 import { authRouter } from "./modules/auth/auth.route.js";
+import { deliveryRouter } from "./modules/delivery/delivery.route.js";
 
 const app = express();
 
@@ -30,6 +31,8 @@ app.get("/api/health", async (req, res) => {
 app.use("/api/v1/users", userRouter);
 
 app.use("/api/v1/auth", authRouter);
+
+app.use("/api/v1/deliveries", deliveryRouter);
 
 app.use(globalErrorHandler);
 

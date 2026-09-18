@@ -9,7 +9,7 @@ const generateAccessToken = (payload: object) => {
   }
 
   const token = jwt.sign(payload, secret, {
-    expiresIn: process.env.JWT_ACCESS_EXPIRES_IN,
+    expiresIn: process.env.JWT_ACCESS_EXPIRES_IN as any,
   });
 
   return token;
