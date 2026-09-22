@@ -1,0 +1,24 @@
+import { Router } from "express";
+import { paymentController } from "./payment.controller.js";
+
+import asyncHandler from "../../utils/asyncHandler.js";
+import auth from "../../middlewares/auth.middleware.js";
+import authorized from "../../middlewares/role.middleware.js";
+
+const router = Router();
+
+router.post(
+  "/create-intent",
+  auth,
+  authorized("CUSTOMER"),
+  asyncHandler(paymentController.createPaymentIntent),
+);
+
+router.get(
+  "/:deliveryId",
+  auth,
+  authorized("CUSTOMER"),
+  asyncHandler(paymentController.getPaymentByDelivery),
+);
+
+export const paymentRouter = router;

@@ -5,6 +5,7 @@ import { globalErrorHandler } from "./middlewares/error.middleware.js";
 import { authRouter } from "./modules/auth/auth.route.js";
 import { deliveryRouter } from "./modules/delivery/delivery.route.js";
 import { adminRouter } from "./modules/admin/admin.route.js";
+import { paymentRouter } from "./modules/payment/payment.route.js";
 
 const app = express();
 
@@ -36,6 +37,8 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/deliveries", deliveryRouter);
 
 app.use("/api/v1/admin", adminRouter); 
+
+app.use("/api/v1/payments", paymentRouter);
 
 app.use(globalErrorHandler);
 
