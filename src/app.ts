@@ -6,8 +6,17 @@ import { authRouter } from "./modules/auth/auth.route.js";
 import { deliveryRouter } from "./modules/delivery/delivery.route.js";
 import { adminRouter } from "./modules/admin/admin.route.js";
 import { paymentRouter } from "./modules/payment/payment.route.js";
+import asyncHandler from "./utils/asyncHandler.js";
+import { paymentController } from "./modules/payment/payment.controller.js";
 
 const app = express();
+
+app.post(
+  "/api/v1/payments/webhook",
+  express.raw({ type: "application/json" }),
+  asyncHandler(paymentController.handleStripeWebhook)
+);
+
 
 app.use(express.json());
 
