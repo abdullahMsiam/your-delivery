@@ -32,9 +32,9 @@ const getAllDeliveries = async () => {
 };
 
 const assignAgent = async (
-    deliveryId: string, 
-    agentId: string, 
-    adminId: string,
+  deliveryId: string,
+  agentId: string,
+  adminId: string,
 ) => {
   const agent = await prisma.user.findFirst({
     where: {
@@ -102,7 +102,167 @@ const assignAgent = async (
   });
 };
 
+const getUsers = async (query: {
+  page: number;
+  limit: number;
+  role?: "CUSTOMER" | "AGENT" | "ADMIN";
+  isActive?: boolean;
+}) => {
+  const { page, limit, role, isActive } = query;
+
+  const skip = (page - 1) * limit;
+
+  const where = {
+    ...(role && { role }),
+    ...(isActive !== undefined && { isActive }),
+  };
+
+  const [users, total] = await Promise.all([
+    prisma.user.findMany({
+      where,
+      skip,
+      take: limit,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    }),
+
+    prisma.user.count({
+      where,
+    }),
+  ]);
+
+  return {
+    users,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+const getUserById = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      role: true,
+      isActive: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  if (!user) {
+    throw new AppError(404, "User not found");
+  }
+
+  return user;
+};
+
+const updateUserStatus = async (
+  userId: string,
+  adminId: string,
+  isActive: boolean,
+) => {
+  if (userId === adminId) {
+    throw new AppError(400, "You cannot change your own account status");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!user) {
+    throw new AppError(404, "User not found");
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      isActive,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      role: true,
+      isActive: true,
+      updatedAt: true,
+    },
+  });
+
+  return updatedUser;
+};
+
+const updateUserRole = async (
+  userId: string,
+  adminId: string,
+  role: "CUSTOMER" | "AGENT" | "ADMIN",
+) => {
+  if (userId === adminId) {
+    throw new AppError(400, "You cannot change your own role");
+  }
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!user) {
+    throw new AppError(404, "User not found");
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      role,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      role: true,
+      isActive: true,
+      updatedAt: true,
+    },
+  });
+
+  return updatedUser;
+};
+
 export const adminService = {
   getAllDeliveries,
   assignAgent,
+  getUsers,
+  updateUserStatus,
+  getUserById,
+  updateUserRole,
+  
 };

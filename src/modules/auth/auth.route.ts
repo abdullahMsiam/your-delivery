@@ -10,6 +10,16 @@ router.post("/register", asyncHandler(authController.register));
 router.post("/login", asyncHandler(authController.login));
 router.get("/me", auth, asyncHandler(authController.getMe));
 
+router.patch(
+  "/change-password",
+  auth,
+  asyncHandler(authController.changePassword),
+);
+
+router.post("/refresh-token", asyncHandler(authController.refreshAccessToken));
+
+router.post("/logout", asyncHandler(authController.logout));
+
 //temporary:
 router.get(
   "/admin-test",

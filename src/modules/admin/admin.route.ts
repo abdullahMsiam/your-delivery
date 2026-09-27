@@ -4,23 +4,48 @@ import authorized from "../../middlewares/role.middleware.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import { adminController } from "./admin.controller.js";
 
-
-
-const router = Router(); 
+const router = Router();
 
 router.get(
-    "/deliveries", 
-    auth, 
-    authorized("ADMIN"), 
-    asyncHandler(adminController.getAllDeliveries), 
-); 
+  "/deliveries",
+  auth,
+  authorized("ADMIN"),
+  asyncHandler(adminController.getAllDeliveries),
+);
 
 router.patch(
-    "/deliveries/:id/assign-agent", 
-    auth, 
-    authorized("ADMIN"),
-    asyncHandler(adminController.assignAgent),
-); 
+  "/deliveries/:id/assign-agent",
+  auth,
+  authorized("ADMIN"),
+  asyncHandler(adminController.assignAgent),
+);
 
+router.get(
+  "/users",
+  auth,
+  authorized("ADMIN"),
+  asyncHandler(adminController.getUsers),
+);
+
+router.get(
+  "/users/:id",
+  auth,
+  authorized("ADMIN"),
+  asyncHandler(adminController.getUserById),
+);
+
+router.patch(
+  "/users/:id/status",
+  auth,
+  authorized("ADMIN"),
+  asyncHandler(adminController.updateUserStatus),
+);
+
+router.patch(
+  "/users/:id/role",
+  auth,
+  authorized("ADMIN"),
+  asyncHandler(adminController.updateUserRole),
+);
 
 export const adminRouter = router;

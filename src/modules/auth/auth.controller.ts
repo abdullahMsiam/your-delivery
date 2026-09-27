@@ -50,9 +50,58 @@ const adminTest = async (_req: AuthenticatedRequest, res: Response) => {
   });
 };
 
+const changePassword = async (req: AuthenticatedRequest, res: Response) => {
+  const { currentPassword, newPassword } = req.body;
+
+  await authService.changePassword(
+    req.user?.userId as string,
+    currentPassword,
+    newPassword,
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Password changed successfully",
+  });
+};
+
+const logout = async (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    throw new AppError(400, "Refresh token is required");
+  }
+
+  await authService.logout(refreshToken);
+
+  res.status(200).json({
+    success: true,
+    message: "Logout successful",
+  });
+};
+
+const refreshAccessToken = async (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    throw new AppError(400, "Refresh token is required");
+  }
+
+  const result = await authService.refreshAccessToken(refreshToken);
+
+  res.status(200).json({
+    success: true,
+    message: "Access token refreshed successfully",
+    data: result,
+  });
+};
+
 export const authController = {
   register,
   login,
   getMe,
+  logout,
   adminTest,
+  changePassword,
+  refreshAccessToken,
 };
