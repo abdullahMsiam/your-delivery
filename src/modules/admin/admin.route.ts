@@ -48,4 +48,25 @@ router.patch(
   asyncHandler(adminController.updateUserRole),
 );
 
+router.get(
+    "/deliveries/:id",
+    auth, 
+    authorized("ADMIN"),
+    asyncHandler(adminController.getDeliveryById)
+);
+
+router.patch(
+  "/deliveries/:id/reassign-agent",
+  auth,
+  authorized("ADMIN"),
+  asyncHandler(adminController.reassignAgent),
+);
+
+router.patch(
+  "/deliveries/:id/cancel",
+  auth,
+  authorized("ADMIN"),
+  asyncHandler(adminController.cancelDelivery),
+);
+
 export const adminRouter = router;

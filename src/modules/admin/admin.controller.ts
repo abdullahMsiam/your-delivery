@@ -112,6 +112,66 @@ const updateUserRole = async (req: AuthenticatedRequest, res: Response) => {
   });
 };
 
+const getDeliveryById = async (req: Request, res: Response) => {
+  const deliveryId = req.params.id;
+
+  if (!deliveryId) {
+    throw new AppError(400, "Delivery ID is required");
+  }
+
+  const delivery = await adminService.getDeliveryById(deliveryId as string);
+
+  res.status(200).json({
+    success: true,
+    message: "Delivery retrieved successfully",
+    data: delivery,
+  });
+};
+
+const reassignAgent = async (req: AuthenticatedRequest, res: Response) => {
+  const deliveryId = req.params.id;
+
+  if (!deliveryId) {
+    throw new AppError(400, "Delivery ID is required");
+  }
+
+  const { agentId } = req.body;
+
+  const delivery = await adminService.reassignAgent(
+    deliveryId as string,
+    agentId as string,
+    req.user!.userId,
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Agent reassigned successfully",
+    data: delivery,
+  });
+};
+
+const cancelDelivery = async (req: AuthenticatedRequest, res: Response) => {
+  const deliveryId = req.params.id;
+
+  if (!deliveryId) {
+    throw new AppError(400, "Delivery ID is required");
+  }
+
+  const { note } = req.body;
+
+  const delivery = await adminService.cancelDelivery(
+    deliveryId as string,
+    req.user!.userId,
+    note,
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Delivery cancelled successfully",
+    data: delivery,
+  });
+};
+
 export const adminController = {
   getAllDeliveries,
   assignAgent,
@@ -119,4 +179,7 @@ export const adminController = {
   getUserById,
   updateUserStatus,
   updateUserRole,
+  getDeliveryById,
+  reassignAgent,
+  cancelDelivery,
 };

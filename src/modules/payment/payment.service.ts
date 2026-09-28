@@ -88,21 +88,6 @@ const getPaymentByDelivery = async (customerId: string, deliveryId: string) => {
 
 const handleStripeWebhook = async (event: Stripe.Event) => {
   switch (event.type) {
-    case "payment_intent.processing": {
-      const paymentIntent = event.data.object as Stripe.PaymentIntent;
-
-      await prisma.payment.updateMany({
-        where: {
-          stripePaymentId: paymentIntent.id,
-        },
-        data: {
-          status: "PROCESSING",
-        },
-      });
-
-      break;
-    }
-
     case "payment_intent.succeeded": {
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
@@ -133,11 +118,29 @@ const handleStripeWebhook = async (event: Stripe.Event) => {
 
       break;
     }
+
+    case "payment_intent.processing": {
+      const paymentIntent = event.data.object as Stripe.PaymentIntent;
+
+      await prisma.payment.updateMany({
+        where: {
+          stripePaymentId: paymentIntent.id,
+        },
+        data: {
+          status: "PROCESSING",
+        },
+      });
+
+      break;
+    }
+
+    default:
+      break;
   }
 };
 
 export const paymentService = {
   createPaymentIntent,
   getPaymentByDelivery,
-  handleStripeWebhook, 
+  handleStripeWebhook,
 };

@@ -21,6 +21,10 @@ export const updateUserRoleSchema = z.object({
   role: z.enum(["CUSTOMER", "AGENT", "ADMIN"]),
 });
 
+export const cancelDeliverySchema = z.object({
+  note: z.string().max(500).optional(),
+});
+
 export const userIdSchema = z.object({
   id: z.string().uuid(),
 });

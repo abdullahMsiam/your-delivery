@@ -257,12 +257,212 @@ const updateUserRole = async (
   return updatedUser;
 };
 
+const getDeliveryById = async (deliveryId: string) => {
+  const delivery = await prisma.delivery.findUnique({
+    where: {
+      id: deliveryId,
+    },
+
+    include: {
+      pickupAddress: true,
+      deliveryAddress: true,
+      payment: true,
+
+      customer: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+        },
+      },
+
+      agent: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+        },
+      },
+
+      statusHistory: {
+        orderBy: {
+          createdAt: "asc",
+        },
+
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              role: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!delivery) {
+    throw new AppError(404, "Delivery not found");
+  }
+
+  return delivery;
+};
+
+const reassignAgent = async (
+  deliveryId: string,
+  agentId: string,
+  adminId: string,
+) => {
+  const agent = await prisma.user.findFirst({
+    where: {
+      id: agentId,
+      role: "AGENT",
+      isActive: true,
+    },
+  });
+
+  if (!agent) {
+    throw new AppError(404, "Active agent not found");
+  }
+
+  const delivery = await prisma.delivery.findUnique({
+    where: {
+      id: deliveryId,
+    },
+  });
+
+  if (!delivery) {
+    throw new AppError(404, "Delivery not found");
+  }
+
+  if (delivery.status !== "ASSIGNED") {
+    throw new AppError(400, "Only assigned deliveries can be reassigned");
+  }
+
+  if (delivery.agentId === agentId) {
+    throw new AppError(400, "This agent is already assigned to the delivery");
+  }
+
+  return prisma.$transaction(async (tx) => {
+    const updatedDelivery = await tx.delivery.update({
+      where: {
+        id: deliveryId,
+      },
+
+      data: {
+        agentId,
+
+        statusHistory: {
+          create: {
+            status: "ASSIGNED",
+            note: `Delivery reassigned to agent ${agent.name}`,
+            updatedBy: adminId,
+          },
+        },
+      },
+
+      include: {
+        agent: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+          },
+        },
+
+        statusHistory: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+
+    return updatedDelivery;
+  });
+};
+
+const cancelDelivery = async (
+  deliveryId: string,
+  adminId: string,
+  note?: string,
+) => {
+  const delivery = await prisma.delivery.findUnique({
+    where: {
+      id: deliveryId,
+    },
+  });
+
+  if (!delivery) {
+    throw new AppError(404, "Delivery not found");
+  }
+
+  if (delivery.status === "DELIVERED") {
+    throw new AppError(400, "Delivered delivery cannot be cancelled");
+  }
+
+  if (delivery.status === "CANCELLED") {
+    throw new AppError(400, "Delivery is already cancelled");
+  }
+
+  return prisma.$transaction(async (tx) => {
+    const updatedDelivery = await tx.delivery.update({
+      where: {
+        id: deliveryId,
+      },
+
+      data: {
+        status: "CANCELLED",
+
+        statusHistory: {
+          create: {
+            status: "CANCELLED",
+            note: note || "Delivery cancelled by admin",
+            updatedBy: adminId,
+          },
+        },
+      },
+
+      include: {
+        customer: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+          },
+        },
+
+        agent: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+          },
+        },
+
+        statusHistory: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+
+    return updatedDelivery;
+  });
+};
+
 export const adminService = {
   getAllDeliveries,
   assignAgent,
   getUsers,
+  getDeliveryById,
   updateUserStatus,
   getUserById,
   updateUserRole,
-  
+  reassignAgent,
+  cancelDelivery,
 };
