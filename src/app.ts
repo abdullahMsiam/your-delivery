@@ -39,6 +39,13 @@ app.get("/api/health", async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Welcome to Your Delivery API",
+  });
+});
+
 app.use("/api/v1/users", userRouter);
 
 app.use("/api/v1/auth", authRouter);
