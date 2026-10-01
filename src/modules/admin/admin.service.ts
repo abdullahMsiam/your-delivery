@@ -1,3 +1,4 @@
+import { DeliveryStatus } from "../../generated/prisma/enums.js";
 import { prisma } from "../../lib/prisma.js";
 import AppError from "../../utils/AppError.js";
 
@@ -454,6 +455,232 @@ const cancelDelivery = async (
     return updatedDelivery;
   });
 };
+const getAllDeliveriesInSearch = async (query: {
+  page: number;
+  limit: number;
+  status?: DeliveryStatus;
+  trackingId?: string;
+  customerId?: string;
+  agentId?: string;
+  dateFrom?: Date;
+  dateTo?: Date;
+}) => {
+  const {
+    page,
+    limit,
+    status,
+    trackingId,
+    customerId,
+    agentId,
+    dateFrom,
+    dateTo,
+  } = query;
+
+  const skip = (page - 1) * limit;
+
+  const where = {
+    ...(status && {
+      status,
+    }),
+
+    ...(trackingId && {
+      trackingId: {
+        contains: trackingId,
+        mode: "insensitive" as const,
+      },
+    }),
+
+    ...(customerId && {
+      customerId,
+    }),
+
+    ...(agentId && {
+      agentId,
+    }),
+
+    ...((dateFrom || dateTo) && {
+      createdAt: {
+        ...(dateFrom && {
+          gte: dateFrom,
+        }),
+
+        ...(dateTo && {
+          lte: dateTo,
+        }),
+      },
+    }),
+  };
+
+  const [deliveries, total] = await prisma.$transaction([
+    prisma.delivery.findMany({
+      where,
+      skip,
+      take: limit,
+
+      include: {
+        pickupAddress: true,
+        deliveryAddress: true,
+        payment: true,
+
+        customer: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+          },
+        },
+
+        agent: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+          },
+        },
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+    }),
+
+    prisma.delivery.count({
+      where,
+    }),
+  ]);
+
+  return {
+    data: deliveries,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
+
+const getAgentStatistics = async (agentId: string) => {
+  const agent = await prisma.user.findUnique({
+    where: {
+      id: agentId,
+    },
+
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      role: true,
+      isActive: true,
+    },
+  });
+
+  if (!agent) {
+    throw new AppError(404, "Agent not found");
+  }
+
+  if (agent.role !== "AGENT") {
+    throw new AppError(400, "User is not an agent");
+  }
+
+  const [
+    totalAssigned,
+    assigned,
+    pickedUp,
+    inTransit,
+    outForDelivery,
+    delivered,
+    failed,
+    cancelled,
+  ] = await Promise.all([
+    prisma.delivery.count({
+      where: {
+        agentId,
+      },
+    }),
+
+    prisma.delivery.count({
+      where: {
+        agentId,
+        status: "ASSIGNED",
+      },
+    }),
+
+    prisma.delivery.count({
+      where: {
+        agentId,
+        status: "PICKED_UP",
+      },
+    }),
+
+    prisma.delivery.count({
+      where: {
+        agentId,
+        status: "IN_TRANSIT",
+      },
+    }),
+
+    prisma.delivery.count({
+      where: {
+        agentId,
+        status: "OUT_FOR_DELIVERY",
+      },
+    }),
+
+    prisma.delivery.count({
+      where: {
+        agentId,
+        status: "DELIVERED",
+      },
+    }),
+
+    prisma.delivery.count({
+      where: {
+        agentId,
+        status: "FAILED",
+      },
+    }),
+
+    prisma.delivery.count({
+      where: {
+        agentId,
+        status: "CANCELLED",
+      },
+    }),
+  ]);
+
+  const activeDeliveries = assigned + pickedUp + inTransit + outForDelivery;
+
+  const completedDeliveries = delivered + failed;
+
+  const successRate =
+    completedDeliveries > 0
+      ? Number(((delivered / completedDeliveries) * 100).toFixed(2))
+      : 0;
+
+  return {
+    agent,
+
+    statistics: {
+      totalAssigned,
+      activeDeliveries,
+      completedDeliveries,
+      delivered,
+      failed,
+      cancelled,
+
+      statusBreakdown: {
+        assigned,
+        pickedUp,
+        inTransit,
+        outForDelivery,
+      },
+
+      successRate,
+    },
+  };
+};
 
 export const adminService = {
   getAllDeliveries,
@@ -465,4 +692,6 @@ export const adminService = {
   updateUserRole,
   reassignAgent,
   cancelDelivery,
+  getAllDeliveriesInSearch,
+  getAgentStatistics,
 };

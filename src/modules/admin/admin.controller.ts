@@ -2,7 +2,12 @@ import { Request, Response } from "express";
 import { adminService } from "./admin.service.js";
 import { AuthenticatedRequest } from "../../middlewares/auth.middleware.js";
 import AppError from "../../utils/AppError.js";
-import { assignAgentSchema, getUsersQuerySchema } from "./admin.validation.js";
+import {
+  assignAgentSchema,
+  getAdminDeliveriesQuerySchema,
+  getUsersQuerySchema,
+} from "./admin.validation.js";
+import { agentIdSchema } from "../agent/agent.validation.js";
 
 const getAllDeliveries = async (req: Request, res: Response) => {
   const deliveries = await adminService.getAllDeliveries();
@@ -172,8 +177,49 @@ const cancelDelivery = async (req: AuthenticatedRequest, res: Response) => {
   });
 };
 
+const getAllDeliveriesInSearch = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const query = getAdminDeliveriesQuerySchema.parse(req.query);
+
+  const result = await adminService.getAllDeliveriesInSearch(query);
+
+  res.status(200).json({
+    success: true,
+    message: "Deliveries retrieved successfully",
+    ...result,
+  });
+};
+
+const getAgentById = async (req: AuthenticatedRequest, res: Response) => {
+  const { id } = agentIdSchema.parse(req.params);
+
+  //need to update the service to get agent by id and return the agent details
+  const agent = await adminService.getUserById(id);
+
+  res.status(200).json({
+    success: true,
+    message: "Agent details retrieved successfully",
+    data: agent,
+  });
+};
+
+const getAgentStatistics = async (req: AuthenticatedRequest, res: Response) => {
+  const { id } = agentIdSchema.parse(req.params);
+
+  const result = await adminService.getAgentStatistics(id);
+
+  res.status(200).json({
+    success: true,
+    message: "Agent statistics retrieved successfully",
+    data: result,
+  });
+};
+
 export const adminController = {
   getAllDeliveries,
+  getAllDeliveriesInSearch,
   assignAgent,
   getUsers,
   getUserById,
@@ -182,4 +228,6 @@ export const adminController = {
   getDeliveryById,
   reassignAgent,
   cancelDelivery,
+  getAgentById,
+  getAgentStatistics,
 };

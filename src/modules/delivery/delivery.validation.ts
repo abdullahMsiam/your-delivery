@@ -38,5 +38,36 @@ export const cancelDeliverySchema = z.object({
   note: z.string().max(500).optional(),
 });
 
+
+export const getMyDeliveriesQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+
+  limit: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(50)
+    .default(10),
+
+  status: z
+    .enum([
+      "PENDING",
+      "ASSIGNED",
+      "PICKED_UP",
+      "IN_TRANSIT",
+      "OUT_FOR_DELIVERY",
+      "DELIVERED",
+      "CANCELLED",
+      "FAILED",
+    ])
+    .optional(),
+
+  trackingId: z.string().trim().optional(),
+
+  dateFrom: z.coerce.date().optional(),
+
+  dateTo: z.coerce.date().optional(),
+});
+
 export type MyDeliveriesQueryInput = z.infer<typeof myDeliveriesQuerySchema>;
 export type CreateDeliveryInput = z.infer<typeof createDeliverySchema>;

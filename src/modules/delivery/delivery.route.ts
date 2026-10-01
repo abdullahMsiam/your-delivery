@@ -19,7 +19,7 @@ router.get(
   "/my-deliveries",
   auth,
   authorize("CUSTOMER"),
-  asyncHandler(deliveryController.getMyDeliveries),
+  asyncHandler(deliveryController.getMyDeliveriesInSearch),
 );
 
 router.get(

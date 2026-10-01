@@ -1,3 +1,4 @@
+import { DeliveryStatus } from "../../generated/prisma/enums.js";
 import { prisma } from "../../lib/prisma.js";
 import AppError from "../../utils/AppError.js";
 import generateTrackingId from "../../utils/trackingId.js";
@@ -116,10 +117,7 @@ const getMyDeliveries = async (
   };
 };
 
-const getMyDeliveryById = async (
-  customerId: string,
-  deliveryId: string,
-) => {
+const getMyDeliveryById = async (customerId: string, deliveryId: string) => {
   const delivery = await prisma.delivery.findFirst({
     where: {
       id: deliveryId,
@@ -203,10 +201,7 @@ const trackDelivery = async (trackingId: string) => {
   return delivery;
 };
 
-const getDeliveryHistory = async (
-  deliveryId: string,
-  customerId: string,
-) => {
+const getDeliveryHistory = async (deliveryId: string, customerId: string) => {
   const delivery = await prisma.delivery.findUnique({
     where: {
       id: deliveryId,
@@ -275,16 +270,10 @@ const cancelDelivery = async (
   }
 
   if (delivery.customerId !== customerId) {
-    throw new AppError(
-      403,
-      "You are not allowed to cancel this delivery",
-    );
+    throw new AppError(403, "You are not allowed to cancel this delivery");
   }
 
-  if (
-    delivery.status !== "PENDING" &&
-    delivery.status !== "ASSIGNED"
-  ) {
+  if (delivery.status !== "PENDING" && delivery.status !== "ASSIGNED") {
     throw new AppError(
       400,
       `Delivery cannot be cancelled when status is ${delivery.status}`,
@@ -326,16 +315,89 @@ const cancelDelivery = async (
     return updatedDelivery;
   });
 };
- 
 
+const getMyDeliveriesInSearch = async (
+  customerId: string,
+  query: {
+    page: number;
+    limit: number;
+    status?: DeliveryStatus;
+    trackingId?: string;
+    dateFrom?: Date;
+    dateTo?: Date;
+  },
+) => {
+  const { page, limit, status, trackingId, dateFrom, dateTo } = query;
+
+  const skip = (page - 1) * limit;
+
+  const where = {
+    customerId,
+
+    ...(status && {
+      status,
+    }),
+
+    ...(trackingId && {
+      trackingId: {
+        contains: trackingId,
+        mode: "insensitive" as const,
+      },
+    }),
+
+    ...((dateFrom || dateTo) && {
+      createdAt: {
+        ...(dateFrom && {
+          gte: dateFrom,
+        }),
+
+        ...(dateTo && {
+          lte: dateTo,
+        }),
+      },
+    }),
+  };
+
+  const [deliveries, total] = await prisma.$transaction([
+    prisma.delivery.findMany({
+      where,
+      skip,
+      take: limit,
+
+      include: {
+        pickupAddress: true,
+        deliveryAddress: true,
+        payment: true,
+      },
+
+      orderBy: {
+        createdAt: "desc",
+      },
+    }),
+
+    prisma.delivery.count({
+      where,
+    }),
+  ]);
+
+  return {
+    data: deliveries,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+};
 
 export const deliveryService = {
   createDelivery,
   getMyDeliveries,
   getMyDeliveryById,
   trackDelivery,
-  getDeliveryHistory, 
-  cancelDelivery, 
+  getDeliveryHistory,
+  cancelDelivery,
+  getMyDeliveriesInSearch,
   
-
 };

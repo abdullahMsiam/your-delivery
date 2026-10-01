@@ -10,7 +10,7 @@ router.get(
   "/deliveries",
   auth,
   authorized("ADMIN"),
-  asyncHandler(adminController.getAllDeliveries),
+  asyncHandler(adminController.getAllDeliveriesInSearch),
 );
 
 router.patch(
@@ -67,6 +67,20 @@ router.patch(
   auth,
   authorized("ADMIN"),
   asyncHandler(adminController.cancelDelivery),
+);
+
+router.get(
+  "/agents/:id",
+  auth,
+  authorized("ADMIN"),
+  asyncHandler(adminController.getAgentById),
+);
+
+router.get(
+  "/agents/:id/statistics",
+  auth,
+  authorized("ADMIN"),
+  asyncHandler(adminController.getAgentStatistics),
 );
 
 export const adminRouter = router;

@@ -6,6 +6,7 @@ import type { AuthenticatedRequest } from "../../middlewares/auth.middleware.js"
 import {
   cancelDeliverySchema,
   createDeliverySchema,
+  getMyDeliveriesQuerySchema,
   myDeliveriesQuerySchema,
 } from "./delivery.validation.js";
 import { deliveryService } from "./delivery.service.js";
@@ -131,6 +132,23 @@ const cancelDelivery = async (
   });
 };
 
+const getMyDeliveriesInSearch = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const query = getMyDeliveriesQuerySchema.parse(req.query);
+
+  const result = await deliveryService.getMyDeliveriesInSearch(
+    req.user!.userId,
+    query,
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Deliveries retrieved successfully",
+    ...result,
+  });
+};
 
 export const deliveryController = {
   createDelivery,
@@ -139,4 +157,5 @@ export const deliveryController = {
   trackDelivery,
   getDeliveryHistory, 
   cancelDelivery, 
+  getMyDeliveriesInSearch,
 };
