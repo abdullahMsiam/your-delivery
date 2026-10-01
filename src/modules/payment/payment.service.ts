@@ -139,8 +139,92 @@ const handleStripeWebhook = async (event: Stripe.Event) => {
   }
 };
 
+const markCodAsPaid = async (
+  deliveryId: string,
+  agentId: string,
+) => {
+  const delivery = await prisma.delivery.findUnique({
+    where: {
+      id: deliveryId,
+    },
+    include: {
+      payment: true,
+    },
+  });
+
+  if (!delivery) {
+    throw new AppError(404, "Delivery not found");
+  }
+
+  if (delivery.agentId !== agentId) {
+    throw new AppError(
+      403,
+      "You are not assigned to this delivery",
+    );
+  }
+
+  if (delivery.status !== "DELIVERED") {
+    throw new AppError(
+      400,
+      "COD payment can only be marked as paid after delivery",
+    );
+  }
+
+  if (!delivery.payment) {
+    throw new AppError(404, "Payment record not found");
+  }
+
+  if (delivery.payment.method !== "COD") {
+    throw new AppError(
+      400,
+      "This delivery does not use Cash on Delivery",
+    );
+  }
+
+  if (delivery.payment.status === "PAID") {
+    throw new AppError(
+      400,
+      "COD payment is already marked as paid",
+    );
+  }
+
+  if (
+    delivery.payment.status === "CANCELLED" ||
+    delivery.payment.status === "REFUNDED"
+  ) {
+    throw new AppError(
+      400,
+      `Payment cannot be marked as paid when status is ${delivery.payment.status}`,
+    );
+  }
+
+  const updatedPayment = await prisma.payment.update({
+    where: {
+      deliveryId,
+    },
+    data: {
+      status: "PAID",
+      paidAt: new Date(),
+    },
+    select: {
+      id: true,
+      deliveryId: true,
+      method: true,
+      status: true,
+      amount: true,
+      paidAt: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+
+  return updatedPayment;
+};
+
 export const paymentService = {
   createPaymentIntent,
   getPaymentByDelivery,
   handleStripeWebhook,
+  markCodAsPaid, 
+
 };

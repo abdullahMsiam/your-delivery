@@ -28,6 +28,19 @@ router.post(
   asyncHandler(paymentController.handleStripeWebhook),
 );
 
+router.patch(
+  "/:deliveryId/cod-paid",
+  auth,
+  authorized("AGENT"),
+  asyncHandler(paymentController.markCodAsPaid),
+);
+
+
+/* PATCH /api/v1/payments/DELIVERY_ID/cod-paid
+Authorization: Bearer AGENT_ACCESS_TOKEN
+Full Stack Developer with knowledge of React.js, Next.js, TypeScript, Node.js, and PostgreSQL. Built secure applications with RESTAPIs, authentication, and booking management across multiple projects, simplifying rental and delivery processes. Seeking a Full Stack Developer Intern position at Octopi Digital to develop practical web solutions
+
+*/
 // need to create /api/v1/payments/webhook
 
 export const paymentRouter = router;

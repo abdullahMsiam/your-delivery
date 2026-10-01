@@ -4,6 +4,7 @@ import AppError from "../../utils/AppError.js";
 import type { AuthenticatedRequest } from "../../middlewares/auth.middleware.js";
 
 import {
+  cancelDeliverySchema,
   createDeliverySchema,
   myDeliveriesQuerySchema,
 } from "./delivery.validation.js";
@@ -82,9 +83,60 @@ const trackDelivery = async (req: Request, res: Response) => {
     data: delivery,
   });
 };
+
+const getDeliveryHistory = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const deliveryId = req.params.id;
+
+  if (!deliveryId) {
+    throw new AppError(400, "Delivery ID is required");
+  }
+
+  const result = await deliveryService.getDeliveryHistory(
+    deliveryId as string,
+    req.user!.userId,
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Delivery history retrieved successfully",
+    data: result,
+  });
+};
+
+const cancelDelivery = async (
+  req: AuthenticatedRequest,
+  res: Response,
+) => {
+  const deliveryId = req.params.id;
+
+  if (!deliveryId) {
+    throw new AppError(400, "Delivery ID is required");
+  }
+
+  const { note } = cancelDeliverySchema.parse(req.body);
+
+  const result = await deliveryService.cancelDelivery(
+    deliveryId as string,
+    req.user!.userId,
+    note,
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "Delivery cancelled successfully",
+    data: result,
+  });
+};
+
+
 export const deliveryController = {
   createDelivery,
   getMyDeliveries,
   getMyDeliveryById,
   trackDelivery,
+  getDeliveryHistory, 
+  cancelDelivery, 
 };

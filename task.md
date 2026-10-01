@@ -15,6 +15,8 @@ Step 32 → Backend Deployment
 Set up this Neon project in the current working directory.
 https://abdullah-siam-chat-2219740.postman.co/workspace/Abdullah's-Workspace~c62360e6-43ad-4482-814e-2c829a9ad4ef/collection/56850102-5eb3a9bf-ab16-48a3-874d-35f6dadc7f43?action=share&creator=56850102
 
+https://drive.google.com/file/d/1d26Az-_hVcXlnHzQQVAmaC7P6Gh04iwI/view?usp=sharing
+
 1. `npm i -g neon@latest && neon login`
 2. `neon skills -y`
 3. `neon mcp -y`

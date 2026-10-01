@@ -202,6 +202,130 @@ const trackDelivery = async (trackingId: string) => {
 
   return delivery;
 };
+
+const getDeliveryHistory = async (
+  deliveryId: string,
+  customerId: string,
+) => {
+  const delivery = await prisma.delivery.findUnique({
+    where: {
+      id: deliveryId,
+    },
+    select: {
+      id: true,
+      trackingId: true,
+      customerId: true,
+    },
+  });
+
+  if (!delivery) {
+    throw new AppError(404, "Delivery not found");
+  }
+
+  if (delivery.customerId !== customerId) {
+    throw new AppError(
+      403,
+      "You are not allowed to view this delivery history",
+    );
+  }
+
+  const history = await prisma.deliveryStatusHistory.findMany({
+    where: {
+      deliveryId,
+    },
+    select: {
+      id: true,
+      status: true,
+      note: true,
+      createdAt: true,
+
+      user: {
+        select: {
+          id: true,
+          name: true,
+          role: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "asc",
+    },
+  });
+
+  return {
+    deliveryId: delivery.id,
+    trackingId: delivery.trackingId,
+    history,
+  };
+};
+
+const cancelDelivery = async (
+  deliveryId: string,
+  customerId: string,
+  note?: string,
+) => {
+  const delivery = await prisma.delivery.findUnique({
+    where: {
+      id: deliveryId,
+    },
+  });
+
+  if (!delivery) {
+    throw new AppError(404, "Delivery not found");
+  }
+
+  if (delivery.customerId !== customerId) {
+    throw new AppError(
+      403,
+      "You are not allowed to cancel this delivery",
+    );
+  }
+
+  if (
+    delivery.status !== "PENDING" &&
+    delivery.status !== "ASSIGNED"
+  ) {
+    throw new AppError(
+      400,
+      `Delivery cannot be cancelled when status is ${delivery.status}`,
+    );
+  }
+
+  return prisma.$transaction(async (tx) => {
+    const updatedDelivery = await tx.delivery.update({
+      where: {
+        id: deliveryId,
+      },
+
+      data: {
+        status: "CANCELLED",
+
+        statusHistory: {
+          create: {
+            status: "CANCELLED",
+            note: note || "Delivery cancelled by customer",
+            updatedBy: customerId,
+          },
+        },
+      },
+
+      include: {
+        pickupAddress: true,
+        deliveryAddress: true,
+
+        payment: true,
+
+        statusHistory: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+
+    return updatedDelivery;
+  });
+};
  
 
 
@@ -210,4 +334,8 @@ export const deliveryService = {
   getMyDeliveries,
   getMyDeliveryById,
   trackDelivery,
+  getDeliveryHistory, 
+  cancelDelivery, 
+  
+
 };

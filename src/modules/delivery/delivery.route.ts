@@ -36,4 +36,18 @@ router.get(
 
 //Todo:
 
+router.get(
+  "/:id/history",
+  auth,
+  authorize("CUSTOMER"),
+  asyncHandler(deliveryController.getDeliveryHistory),
+);
+
+router.patch(
+  "/:id/cancel",
+  auth,
+  authorize("CUSTOMER"),
+  asyncHandler(deliveryController.cancelDelivery),
+);
+
 export const deliveryRouter = router;

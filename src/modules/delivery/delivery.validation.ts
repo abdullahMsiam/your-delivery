@@ -34,5 +34,9 @@ export const myDeliveriesQuerySchema = z.object({
   limit: z.coerce.number().int().positive().max(50).default(10),
 });
 
+export const cancelDeliverySchema = z.object({
+  note: z.string().max(500).optional(),
+});
+
 export type MyDeliveriesQueryInput = z.infer<typeof myDeliveriesQuerySchema>;
 export type CreateDeliveryInput = z.infer<typeof createDeliverySchema>;

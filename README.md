@@ -10,7 +10,6 @@ The project provides role-based delivery management for **Customers, Agents, and
 
 **Health Check:** `https://your-delivery.onrender.com/api/v1/health`
 
-> Replace `YOUR-RENDER-DOMAIN` with the actual Render URL before publishing the repository.
 
 ---
 
