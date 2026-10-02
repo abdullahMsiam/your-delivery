@@ -217,6 +217,16 @@ const getAgentStatistics = async (req: AuthenticatedRequest, res: Response) => {
   });
 };
 
+const getDashboard = async (req: AuthenticatedRequest, res: Response) => {
+  const dashboard = await adminService.getDashboard();
+
+  res.status(200).json({
+    success: true,
+    message: "Admin dashboard data retrieved successfully",
+    data: dashboard,
+  });
+};
+
 export const adminController = {
   getAllDeliveries,
   getAllDeliveriesInSearch,
@@ -230,4 +240,5 @@ export const adminController = {
   cancelDelivery,
   getAgentById,
   getAgentStatistics,
+  getDashboard,
 };

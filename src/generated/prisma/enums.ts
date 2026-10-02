@@ -50,3 +50,16 @@ export const PaymentStatus = {
 } as const
 
 export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const NotificationType = {
+  DELIVERY_ASSIGNED: 'DELIVERY_ASSIGNED',
+  DELIVERY_STATUS_UPDATED: 'DELIVERY_STATUS_UPDATED',
+  DELIVERY_DELIVERED: 'DELIVERY_DELIVERED',
+  DELIVERY_CANCELLED: 'DELIVERY_CANCELLED',
+  PAYMENT_PAID: 'PAYMENT_PAID',
+  PAYMENT_FAILED: 'PAYMENT_FAILED',
+  COD_PAYMENT_RECEIVED: 'COD_PAYMENT_RECEIVED'
+} as const
+
+export type NotificationType = (typeof NotificationType)[keyof typeof NotificationType]

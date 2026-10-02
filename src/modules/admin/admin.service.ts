@@ -682,6 +682,276 @@ const getAgentStatistics = async (agentId: string) => {
   };
 };
 
+const getDashboard = async () => {
+  const [
+    deliveryTotal,
+    deliveryPending,
+    deliveryAssigned,
+    deliveryPickedUp,
+    deliveryInTransit,
+    deliveryOutForDelivery,
+    deliveryDelivered,
+    deliveryCancelled,
+    deliveryFailed,
+
+    totalCustomers,
+    totalAgents,
+    activeAgents,
+    inactiveAgents,
+
+    totalPayments,
+    paymentPaid,
+    paymentPending,
+    paymentProcessing,
+    paymentFailed,
+    paymentCancelled,
+    paymentRefunded,
+
+    stripePayments,
+    codPayments,
+
+    paidRevenue,
+    pendingRevenue,
+
+    recentDeliveries,
+    recentUsers,
+  ] = await Promise.all([
+    // -------------------------
+    // Delivery statistics
+    // -------------------------
+
+    prisma.delivery.count(),
+
+    prisma.delivery.count({
+      where: { status: "PENDING" },
+    }),
+
+    prisma.delivery.count({
+      where: { status: "ASSIGNED" },
+    }),
+
+    prisma.delivery.count({
+      where: { status: "PICKED_UP" },
+    }),
+
+    prisma.delivery.count({
+      where: { status: "IN_TRANSIT" },
+    }),
+
+    prisma.delivery.count({
+      where: { status: "OUT_FOR_DELIVERY" },
+    }),
+
+    prisma.delivery.count({
+      where: { status: "DELIVERED" },
+    }),
+
+    prisma.delivery.count({
+      where: { status: "CANCELLED" },
+    }),
+
+    prisma.delivery.count({
+      where: { status: "FAILED" },
+    }),
+
+    // -------------------------
+    // User statistics
+    // -------------------------
+
+    prisma.user.count({
+      where: { role: "CUSTOMER" },
+    }),
+
+    prisma.user.count({
+      where: { role: "AGENT" },
+    }),
+
+    prisma.user.count({
+      where: {
+        role: "AGENT",
+        isActive: true,
+      },
+    }),
+
+    prisma.user.count({
+      where: {
+        role: "AGENT",
+        isActive: false,
+      },
+    }),
+
+    // -------------------------
+    // Payment statistics
+    // -------------------------
+
+    prisma.payment.count(),
+
+    prisma.payment.count({
+      where: { status: "PAID" },
+    }),
+
+    prisma.payment.count({
+      where: { status: "PENDING" },
+    }),
+
+    prisma.payment.count({
+      where: { status: "PROCESSING" },
+    }),
+
+    prisma.payment.count({
+      where: { status: "FAILED" },
+    }),
+
+    prisma.payment.count({
+      where: { status: "CANCELLED" },
+    }),
+
+    prisma.payment.count({
+      where: { status: "REFUNDED" },
+    }),
+
+    prisma.payment.count({
+      where: { method: "STRIPE" },
+    }),
+
+    prisma.payment.count({
+      where: { method: "COD" },
+    }),
+
+    // -------------------------
+    // Revenue
+    // -------------------------
+
+    prisma.payment.aggregate({
+      where: {
+        status: "PAID",
+      },
+      _sum: {
+        amount: true,
+      },
+    }),
+
+    prisma.payment.aggregate({
+      where: {
+        status: {
+          in: ["PENDING", "PROCESSING"],
+        },
+      },
+      _sum: {
+        amount: true,
+      },
+    }),
+
+    // -------------------------
+    // Recent deliveries
+    // -------------------------
+
+    prisma.delivery.findMany({
+      take: 10,
+
+      orderBy: {
+        createdAt: "desc",
+      },
+
+      select: {
+        id: true,
+        trackingId: true,
+        status: true,
+        deliveryCharge: true,
+        codAmount: true,
+        createdAt: true,
+
+        customer: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+          },
+        },
+
+        agent: {
+          select: {
+            id: true,
+            name: true,
+            phone: true,
+          },
+        },
+
+        payment: {
+          select: {
+            method: true,
+            status: true,
+            amount: true,
+          },
+        },
+      },
+    }),
+
+    // -------------------------
+    // Recent users
+    // -------------------------
+
+    prisma.user.findMany({
+      take: 5,
+
+      orderBy: {
+        createdAt: "desc",
+      },
+
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        phone: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+      },
+    }),
+  ]);
+
+  return {
+    deliveries: {
+      total: deliveryTotal,
+      pending: deliveryPending,
+      assigned: deliveryAssigned,
+      pickedUp: deliveryPickedUp,
+      inTransit: deliveryInTransit,
+      outForDelivery: deliveryOutForDelivery,
+      delivered: deliveryDelivered,
+      cancelled: deliveryCancelled,
+      failed: deliveryFailed,
+    },
+
+    users: {
+      totalCustomers,
+      totalAgents,
+      activeAgents,
+      inactiveAgents,
+    },
+
+    payments: {
+      total: totalPayments,
+      paid: paymentPaid,
+      pending: paymentPending,
+      processing: paymentProcessing,
+      failed: paymentFailed,
+      cancelled: paymentCancelled,
+      refunded: paymentRefunded,
+      stripe: stripePayments,
+      cod: codPayments,
+    },
+
+    revenue: {
+      totalPaid: paidRevenue._sum.amount ?? 0,
+      totalPending: pendingRevenue._sum.amount ?? 0,
+    },
+
+    recentDeliveries,
+    recentUsers,
+  };
+};
+
 export const adminService = {
   getAllDeliveries,
   assignAgent,
@@ -694,4 +964,6 @@ export const adminService = {
   cancelDelivery,
   getAllDeliveriesInSearch,
   getAgentStatistics,
+  getDashboard,
+  getAgentById: getUserById,
 };

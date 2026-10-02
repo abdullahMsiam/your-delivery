@@ -53,6 +53,8 @@ model User {
   agentDeliveries    Delivery[]              @relation("AgentDeliveries")
   refreshTokens      RefreshToken[]
   statusUpdates      DeliveryStatusHistory[] @relation("StatusUpdatedBy")
+
+  notifications Notification[]
 }
 
 model RefreshToken {
@@ -153,4 +155,31 @@ model Payment {
 
   @@index([status])
   @@index([method])
+}
+
+enum NotificationType {
+  DELIVERY_ASSIGNED
+  DELIVERY_STATUS_UPDATED
+  DELIVERY_DELIVERED
+  DELIVERY_CANCELLED
+  PAYMENT_PAID
+  PAYMENT_FAILED
+  COD_PAYMENT_RECEIVED
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields:[userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([userId, isRead])
+  @@index([createdAt])
 }

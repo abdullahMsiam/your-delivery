@@ -218,6 +218,7 @@ export type UserWhereInput = {
   agentDeliveries?: Prisma.DeliveryListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   statusUpdates?: Prisma.DeliveryStatusHistoryListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -234,6 +235,7 @@ export type UserOrderByWithRelationInput = {
   agentDeliveries?: Prisma.DeliveryOrderByRelationAggregateInput
   refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
   statusUpdates?: Prisma.DeliveryStatusHistoryOrderByRelationAggregateInput
+  notifications?: Prisma.NotificationOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -253,6 +255,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   agentDeliveries?: Prisma.DeliveryListRelationFilter
   refreshTokens?: Prisma.RefreshTokenListRelationFilter
   statusUpdates?: Prisma.DeliveryStatusHistoryListRelationFilter
+  notifications?: Prisma.NotificationListRelationFilter
 }, "id" | "email" | "phone">
 
 export type UserOrderByWithAggregationInput = {
@@ -299,6 +302,7 @@ export type UserCreateInput = {
   agentDeliveries?: Prisma.DeliveryCreateNestedManyWithoutAgentInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   statusUpdates?: Prisma.DeliveryStatusHistoryCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -315,6 +319,7 @@ export type UserUncheckedCreateInput = {
   agentDeliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutAgentInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   statusUpdates?: Prisma.DeliveryStatusHistoryUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -331,6 +336,7 @@ export type UserUpdateInput = {
   agentDeliveries?: Prisma.DeliveryUpdateManyWithoutAgentNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   statusUpdates?: Prisma.DeliveryStatusHistoryUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -347,6 +353,7 @@ export type UserUncheckedUpdateInput = {
   agentDeliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutAgentNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   statusUpdates?: Prisma.DeliveryStatusHistoryUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -505,6 +512,20 @@ export type UserUpdateOneRequiredWithoutStatusUpdatesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutStatusUpdatesInput, Prisma.UserUpdateWithoutStatusUpdatesInput>, Prisma.UserUncheckedUpdateWithoutStatusUpdatesInput>
 }
 
+export type UserCreateNestedOneWithoutNotificationsInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutNotificationsInput
+  upsert?: Prisma.UserUpsertWithoutNotificationsInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutNotificationsInput, Prisma.UserUpdateWithoutNotificationsInput>, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+}
+
 export type UserCreateWithoutRefreshTokensInput = {
   id?: string
   name: string
@@ -518,6 +539,7 @@ export type UserCreateWithoutRefreshTokensInput = {
   customerDeliveries?: Prisma.DeliveryCreateNestedManyWithoutCustomerInput
   agentDeliveries?: Prisma.DeliveryCreateNestedManyWithoutAgentInput
   statusUpdates?: Prisma.DeliveryStatusHistoryCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRefreshTokensInput = {
@@ -533,6 +555,7 @@ export type UserUncheckedCreateWithoutRefreshTokensInput = {
   customerDeliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutCustomerInput
   agentDeliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutAgentInput
   statusUpdates?: Prisma.DeliveryStatusHistoryUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRefreshTokensInput = {
@@ -564,6 +587,7 @@ export type UserUpdateWithoutRefreshTokensInput = {
   customerDeliveries?: Prisma.DeliveryUpdateManyWithoutCustomerNestedInput
   agentDeliveries?: Prisma.DeliveryUpdateManyWithoutAgentNestedInput
   statusUpdates?: Prisma.DeliveryStatusHistoryUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRefreshTokensInput = {
@@ -579,6 +603,7 @@ export type UserUncheckedUpdateWithoutRefreshTokensInput = {
   customerDeliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutCustomerNestedInput
   agentDeliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutAgentNestedInput
   statusUpdates?: Prisma.DeliveryStatusHistoryUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCustomerDeliveriesInput = {
@@ -594,6 +619,7 @@ export type UserCreateWithoutCustomerDeliveriesInput = {
   agentDeliveries?: Prisma.DeliveryCreateNestedManyWithoutAgentInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   statusUpdates?: Prisma.DeliveryStatusHistoryCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCustomerDeliveriesInput = {
@@ -609,6 +635,7 @@ export type UserUncheckedCreateWithoutCustomerDeliveriesInput = {
   agentDeliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutAgentInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   statusUpdates?: Prisma.DeliveryStatusHistoryUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCustomerDeliveriesInput = {
@@ -629,6 +656,7 @@ export type UserCreateWithoutAgentDeliveriesInput = {
   customerDeliveries?: Prisma.DeliveryCreateNestedManyWithoutCustomerInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   statusUpdates?: Prisma.DeliveryStatusHistoryCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAgentDeliveriesInput = {
@@ -644,6 +672,7 @@ export type UserUncheckedCreateWithoutAgentDeliveriesInput = {
   customerDeliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutCustomerInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   statusUpdates?: Prisma.DeliveryStatusHistoryUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAgentDeliveriesInput = {
@@ -675,6 +704,7 @@ export type UserUpdateWithoutCustomerDeliveriesInput = {
   agentDeliveries?: Prisma.DeliveryUpdateManyWithoutAgentNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   statusUpdates?: Prisma.DeliveryStatusHistoryUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCustomerDeliveriesInput = {
@@ -690,6 +720,7 @@ export type UserUncheckedUpdateWithoutCustomerDeliveriesInput = {
   agentDeliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutAgentNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   statusUpdates?: Prisma.DeliveryStatusHistoryUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserUpsertWithoutAgentDeliveriesInput = {
@@ -716,6 +747,7 @@ export type UserUpdateWithoutAgentDeliveriesInput = {
   customerDeliveries?: Prisma.DeliveryUpdateManyWithoutCustomerNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   statusUpdates?: Prisma.DeliveryStatusHistoryUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAgentDeliveriesInput = {
@@ -731,6 +763,7 @@ export type UserUncheckedUpdateWithoutAgentDeliveriesInput = {
   customerDeliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutCustomerNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   statusUpdates?: Prisma.DeliveryStatusHistoryUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutStatusUpdatesInput = {
@@ -746,6 +779,7 @@ export type UserCreateWithoutStatusUpdatesInput = {
   customerDeliveries?: Prisma.DeliveryCreateNestedManyWithoutCustomerInput
   agentDeliveries?: Prisma.DeliveryCreateNestedManyWithoutAgentInput
   refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutStatusUpdatesInput = {
@@ -761,6 +795,7 @@ export type UserUncheckedCreateWithoutStatusUpdatesInput = {
   customerDeliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutCustomerInput
   agentDeliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutAgentInput
   refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  notifications?: Prisma.NotificationUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutStatusUpdatesInput = {
@@ -792,6 +827,7 @@ export type UserUpdateWithoutStatusUpdatesInput = {
   customerDeliveries?: Prisma.DeliveryUpdateManyWithoutCustomerNestedInput
   agentDeliveries?: Prisma.DeliveryUpdateManyWithoutAgentNestedInput
   refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutStatusUpdatesInput = {
@@ -807,6 +843,87 @@ export type UserUncheckedUpdateWithoutStatusUpdatesInput = {
   customerDeliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutCustomerNestedInput
   agentDeliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutAgentNestedInput
   refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  notifications?: Prisma.NotificationUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutNotificationsInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  phone: string
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  customerDeliveries?: Prisma.DeliveryCreateNestedManyWithoutCustomerInput
+  agentDeliveries?: Prisma.DeliveryCreateNestedManyWithoutAgentInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  statusUpdates?: Prisma.DeliveryStatusHistoryCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutNotificationsInput = {
+  id?: string
+  name: string
+  email: string
+  password: string
+  phone: string
+  role?: $Enums.UserRole
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  customerDeliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutCustomerInput
+  agentDeliveries?: Prisma.DeliveryUncheckedCreateNestedManyWithoutAgentInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  statusUpdates?: Prisma.DeliveryStatusHistoryUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutNotificationsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+}
+
+export type UserUpsertWithoutNotificationsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutNotificationsInput, Prisma.UserUncheckedCreateWithoutNotificationsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutNotificationsInput, Prisma.UserUncheckedUpdateWithoutNotificationsInput>
+}
+
+export type UserUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customerDeliveries?: Prisma.DeliveryUpdateManyWithoutCustomerNestedInput
+  agentDeliveries?: Prisma.DeliveryUpdateManyWithoutAgentNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  statusUpdates?: Prisma.DeliveryStatusHistoryUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutNotificationsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  customerDeliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutCustomerNestedInput
+  agentDeliveries?: Prisma.DeliveryUncheckedUpdateManyWithoutAgentNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  statusUpdates?: Prisma.DeliveryStatusHistoryUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -819,6 +936,7 @@ export type UserCountOutputType = {
   agentDeliveries: number
   refreshTokens: number
   statusUpdates: number
+  notifications: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -826,6 +944,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   agentDeliveries?: boolean | UserCountOutputTypeCountAgentDeliveriesArgs
   refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
   statusUpdates?: boolean | UserCountOutputTypeCountStatusUpdatesArgs
+  notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
 }
 
 /**
@@ -866,6 +985,13 @@ export type UserCountOutputTypeCountStatusUpdatesArgs<ExtArgs extends runtime.Ty
   where?: Prisma.DeliveryStatusHistoryWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificationWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -881,6 +1007,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   agentDeliveries?: boolean | Prisma.User$agentDeliveriesArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   statusUpdates?: boolean | Prisma.User$statusUpdatesArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -926,6 +1053,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   agentDeliveries?: boolean | Prisma.User$agentDeliveriesArgs<ExtArgs>
   refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   statusUpdates?: boolean | Prisma.User$statusUpdatesArgs<ExtArgs>
+  notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -938,6 +1066,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     agentDeliveries: Prisma.$DeliveryPayload<ExtArgs>[]
     refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
     statusUpdates: Prisma.$DeliveryStatusHistoryPayload<ExtArgs>[]
+    notifications: Prisma.$NotificationPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1347,6 +1476,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   agentDeliveries<T extends Prisma.User$agentDeliveriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$agentDeliveriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeliveryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   statusUpdates<T extends Prisma.User$statusUpdatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$statusUpdatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeliveryStatusHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  notifications<T extends Prisma.User$notificationsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1871,6 +2001,30 @@ export type User$statusUpdatesArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   distinct?: Prisma.DeliveryStatusHistoryScalarFieldEnum | Prisma.DeliveryStatusHistoryScalarFieldEnum[]
+}
+
+/**
+ * User.notifications
+ */
+export type User$notificationsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notification
+   */
+  select?: Prisma.NotificationSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notification
+   */
+  omit?: Prisma.NotificationOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificationInclude<ExtArgs> | null
+  where?: Prisma.NotificationWhereInput
+  orderBy?: Prisma.NotificationOrderByWithRelationInput | Prisma.NotificationOrderByWithRelationInput[]
+  cursor?: Prisma.NotificationWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificationScalarFieldEnum | Prisma.NotificationScalarFieldEnum[]
 }
 
 /**

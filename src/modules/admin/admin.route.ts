@@ -7,6 +7,13 @@ import { adminController } from "./admin.controller.js";
 const router = Router();
 
 router.get(
+  "/dashboard",
+  auth,
+  authorized("ADMIN"),
+  asyncHandler(adminController.getDashboard),
+);
+
+router.get(
   "/deliveries",
   auth,
   authorized("ADMIN"),
@@ -49,10 +56,10 @@ router.patch(
 );
 
 router.get(
-    "/deliveries/:id",
-    auth, 
-    authorized("ADMIN"),
-    asyncHandler(adminController.getDeliveryById)
+  "/deliveries/:id",
+  auth,
+  authorized("ADMIN"),
+  asyncHandler(adminController.getDeliveryById),
 );
 
 router.patch(
