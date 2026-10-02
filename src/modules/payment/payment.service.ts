@@ -2,6 +2,7 @@ import Stripe from "stripe";
 import stripe from "../../config/stripe.js";
 import { prisma } from "../../lib/prisma.js";
 import AppError from "../../utils/AppError.js";
+import { notificationService } from "../notification/notification.service.js";
 
 const createPaymentIntent = async (customerId: string, deliveryId: string) => {
   const delivery = await prisma.delivery.findFirst({
@@ -91,9 +92,30 @@ const handleStripeWebhook = async (event: Stripe.Event) => {
     case "payment_intent.succeeded": {
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
-      await prisma.payment.updateMany({
+      const payment = await prisma.payment.findFirst({
         where: {
           stripePaymentId: paymentIntent.id,
+        },
+        include: {
+          delivery: {
+            select: {
+              trackingId: true,
+              customerId: true,
+            },
+          },
+        },
+      });
+
+      if (!payment) {
+        console.error(
+          `Payment not found for Stripe PaymentIntent: ${paymentIntent.id}`,
+        );
+        break;
+      }
+
+      await prisma.payment.update({
+        where: {
+          id: payment.id,
         },
         data: {
           status: "PAID",
@@ -101,20 +123,63 @@ const handleStripeWebhook = async (event: Stripe.Event) => {
         },
       });
 
+      try {
+        await notificationService.createNotification({
+          userId: payment.delivery.customerId,
+          type: "PAYMENT_PAID",
+          title: "Payment Successful",
+          message: `Payment for parcel ${payment.delivery.trackingId} was successful.`,
+        });
+      } catch (error) {
+        console.error("Failed to create payment success notification:", error);
+      }
+
       break;
     }
 
     case "payment_intent.payment_failed": {
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
 
-      await prisma.payment.updateMany({
+      const payment = await prisma.payment.findFirst({
         where: {
           stripePaymentId: paymentIntent.id,
+        },
+        include: {
+          delivery: {
+            select: {
+              trackingId: true,
+              customerId: true,
+            },
+          },
+        },
+      });
+
+      if (!payment) {
+        console.error(
+          `Payment not found for Stripe PaymentIntent: ${paymentIntent.id}`,
+        );
+        break;
+      }
+
+      await prisma.payment.update({
+        where: {
+          id: payment.id,
         },
         data: {
           status: "FAILED",
         },
       });
+
+      try {
+        await notificationService.createNotification({
+          userId: payment.delivery.customerId,
+          type: "PAYMENT_FAILED",
+          title: "Payment Failed",
+          message: `Payment for parcel ${payment.delivery.trackingId} failed.`,
+        });
+      } catch (error) {
+        console.error("Failed to create payment failure notification:", error);
+      }
 
       break;
     }
@@ -139,10 +204,7 @@ const handleStripeWebhook = async (event: Stripe.Event) => {
   }
 };
 
-const markCodAsPaid = async (
-  deliveryId: string,
-  agentId: string,
-) => {
+const markCodAsPaid = async (deliveryId: string, agentId: string) => {
   const delivery = await prisma.delivery.findUnique({
     where: {
       id: deliveryId,
@@ -157,10 +219,7 @@ const markCodAsPaid = async (
   }
 
   if (delivery.agentId !== agentId) {
-    throw new AppError(
-      403,
-      "You are not assigned to this delivery",
-    );
+    throw new AppError(403, "You are not assigned to this delivery");
   }
 
   if (delivery.status !== "DELIVERED") {
@@ -175,17 +234,11 @@ const markCodAsPaid = async (
   }
 
   if (delivery.payment.method !== "COD") {
-    throw new AppError(
-      400,
-      "This delivery does not use Cash on Delivery",
-    );
+    throw new AppError(400, "This delivery does not use Cash on Delivery");
   }
 
   if (delivery.payment.status === "PAID") {
-    throw new AppError(
-      400,
-      "COD payment is already marked as paid",
-    );
+    throw new AppError(400, "COD payment is already marked as paid");
   }
 
   if (
@@ -218,6 +271,18 @@ const markCodAsPaid = async (
     },
   });
 
+  // Notify customer about COD payment
+  try {
+    await notificationService.createNotification({
+      userId: delivery.customerId,
+      type: "COD_PAYMENT_RECEIVED",
+      title: "COD Payment Received",
+      message: `Cash payment for parcel ${delivery.trackingId} has been received.`,
+    });
+  } catch (error) {
+    console.error("Failed to create COD payment notification:", error);
+  }
+
   return updatedPayment;
 };
 
@@ -225,6 +290,5 @@ export const paymentService = {
   createPaymentIntent,
   getPaymentByDelivery,
   handleStripeWebhook,
-  markCodAsPaid, 
-
+  markCodAsPaid,
 };

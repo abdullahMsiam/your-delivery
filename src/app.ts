@@ -9,6 +9,7 @@ import { paymentRouter } from "./modules/payment/payment.route.js";
 import asyncHandler from "./utils/asyncHandler.js";
 import { paymentController } from "./modules/payment/payment.controller.js";
 import { notificationRouter } from "./modules/notification/notification.route.js";
+import { agentRouter } from "./modules/agent/agent.route.js";
 
 const app = express();
 
@@ -54,6 +55,8 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/deliveries", deliveryRouter);
 
 app.use("/api/v1/admin", adminRouter); 
+
+app.use("/api/v1/agent", agentRouter); 
 
 app.use("/api/v1/payments", paymentRouter);
 

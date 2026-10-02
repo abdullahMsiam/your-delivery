@@ -8,7 +8,9 @@ The project provides role-based delivery management for **Customers, Agents, and
 
 **Production API:** `https://your-delivery.onrender.com/`
 
-**Health Check:** `https://your-delivery.onrender.com/api/v1/health`
+**Health Check:** `https://your-delivery.onrender.com/api/health`
+
+> Frontend integration: see the [complete frontend API guide](./docs/FRONTEND_API_GUIDE.md) for endpoint contracts, authentication, request/response examples, workflows, and known routing/integration limitations.
 
 
 ---
@@ -285,71 +287,9 @@ Base URL:
 /api/v1
 ```
 
-### Health
+The complete frontend contract—including authentication, all currently mounted endpoints, request/response examples, workflows, and known limitations—is documented in the [Frontend API Guide](./docs/FRONTEND_API_GUIDE.md).
 
-```http
-GET /health
-```
-
-### Authentication
-
-```http
-POST  /auth/register
-POST  /auth/login
-GET   /auth/me
-PATCH /auth/change-password
-POST  /auth/refresh-token
-POST  /auth/logout
-```
-
-### Users
-
-```http
-GET   /users/me
-PATCH /users/me
-```
-
-### Customer Deliveries
-
-```http
-POST  /deliveries
-GET   /deliveries/my-deliveries
-GET   /deliveries/track/:trackingId
-GET   /deliveries/:id
-GET   /deliveries/:id/history
-PATCH /deliveries/:id/cancel
-```
-
-### Admin
-
-```http
-GET   /admin/deliveries
-GET   /admin/deliveries/:id
-PATCH /admin/deliveries/:id/assign-agent
-PATCH /admin/deliveries/:id/reassign-agent
-PATCH /admin/deliveries/:id/cancel
-
-GET   /admin/users
-GET   /admin/users/:id
-PATCH /admin/users/:id/status
-PATCH /admin/users/:id/role
-```
-
-### Agent
-
-```http
-GET   /agent/deliveries
-PATCH /agent/deliveries/:id/status
-```
-
-### Payments
-
-```http
-POST  /payments/create-intent
-GET   /payments/:deliveryId
-POST  /payments/webhook
-PATCH /payments/:deliveryId/cod-paid
-```
+The database health check is `GET /api/health` (outside the `/api/v1` prefix).
 
 ---
 
@@ -549,7 +489,7 @@ The deployed API can be tested through:
 Health check:
 
 ```http
-GET https://YOUR-RENDER-DOMAIN/api/v1/health
+GET https://YOUR-RENDER-DOMAIN/api/health
 ```
 
 ---
@@ -611,14 +551,9 @@ The current version focuses on the core backend/MVP functionality:
 
 Future development can include:
 
-- Advanced delivery search and filtering
-- Agent statistics
-- Admin dashboard
-- Notifications
-- Security hardening
-- Automated tests
-- Swagger/OpenAPI documentation
-- Integration testing
+- Mounting the agent router and enabling/configuring frontend CORS
+- Security hardening and automated tests
+- Swagger/OpenAPI documentation and integration testing
 - Additional production optimizations
 
 ---
