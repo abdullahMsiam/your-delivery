@@ -1,6 +1,7 @@
 import { DeliveryStatus } from "../../generated/prisma/enums.js";
 import { prisma } from "../../lib/prisma.js";
 import AppError from "../../utils/AppError.js";
+import { notificationService } from "../notification/notification.service.js";
 
 const getAllDeliveries = async () => {
   return prisma.delivery.findMany({
@@ -98,6 +99,17 @@ const assignAgent = async (
         },
       },
     });
+
+    try {
+      await notificationService.createNotification({
+        userId: agentId,
+        type: "DELIVERY_ASSIGNED",
+        title: "New Delivery Assigned",
+        message: `You have been assigned delivery ${updatedDelivery.trackingId}.`,
+      });
+    } catch (error) {
+      console.error("Failed to create assignment notification:", error);
+    }
 
     return updatedDelivery;
   });

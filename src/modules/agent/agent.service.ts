@@ -1,5 +1,6 @@
 import { prisma } from "../../lib/prisma.js";
 import AppError from "../../utils/AppError.js";
+import { notificationService } from "../notification/notification.service.js";
 
 const getMyAgentDetails = async (agentId: string) => {
   const agent = await prisma.user.findUnique({
@@ -301,6 +302,52 @@ const updateDeliveryStatus = async (
 
     return updated;
   });
+
+  // Create notification for the customer
+  const notificationMap = {
+    PICKED_UP: {
+      type: "DELIVERY_STATUS_UPDATED" as const,
+      title: "Parcel Picked Up",
+      message: `Your parcel ${updatedDelivery.trackingId} has been picked up.`,
+    },
+
+    IN_TRANSIT: {
+      type: "DELIVERY_STATUS_UPDATED" as const,
+      title: "Parcel In Transit",
+      message: `Your parcel ${updatedDelivery.trackingId} is now in transit.`,
+    },
+
+    OUT_FOR_DELIVERY: {
+      type: "DELIVERY_STATUS_UPDATED" as const,
+      title: "Out for Delivery",
+      message: `Your parcel ${updatedDelivery.trackingId} is out for delivery.`,
+    },
+
+    DELIVERED: {
+      type: "DELIVERY_DELIVERED" as const,
+      title: "Parcel Delivered",
+      message: `Your parcel ${updatedDelivery.trackingId} has been delivered successfully.`,
+    },
+
+    FAILED: {
+      type: "DELIVERY_STATUS_UPDATED" as const,
+      title: "Delivery Failed",
+      message: `Delivery of your parcel ${updatedDelivery.trackingId} could not be completed.`,
+    },
+  };
+
+  const notification = notificationMap[status];
+
+  try {
+    await notificationService.createNotification({
+      userId: updatedDelivery.customer.id,
+      type: notification.type,
+      title: notification.title,
+      message: notification.message,
+    });
+  } catch (error) {
+    console.error("Failed to create delivery status notification:", error);
+  }
 
   return updatedDelivery;
 };

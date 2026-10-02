@@ -8,6 +8,7 @@ import { adminRouter } from "./modules/admin/admin.route.js";
 import { paymentRouter } from "./modules/payment/payment.route.js";
 import asyncHandler from "./utils/asyncHandler.js";
 import { paymentController } from "./modules/payment/payment.controller.js";
+import { notificationRouter } from "./modules/notification/notification.route.js";
 
 const app = express();
 
@@ -55,6 +56,8 @@ app.use("/api/v1/deliveries", deliveryRouter);
 app.use("/api/v1/admin", adminRouter); 
 
 app.use("/api/v1/payments", paymentRouter);
+
+app.use("/api/v1/notifications", notificationRouter);
 
 app.use(globalErrorHandler);
 
