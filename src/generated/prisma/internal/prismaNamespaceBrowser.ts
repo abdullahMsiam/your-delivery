@@ -57,7 +57,8 @@ export const ModelName = {
   Delivery: 'Delivery',
   DeliveryStatusHistory: 'DeliveryStatusHistory',
   Payment: 'Payment',
-  Notification: 'Notification'
+  Notification: 'Notification',
+  StripeWebhookEvent: 'StripeWebhookEvent'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -174,6 +175,16 @@ export const NotificationScalarFieldEnum = {
 } as const
 
 export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
+export const StripeWebhookEventScalarFieldEnum = {
+  id: 'id',
+  eventId: 'eventId',
+  eventType: 'eventType',
+  processedAt: 'processedAt'
+} as const
+
+export type StripeWebhookEventScalarFieldEnum = (typeof StripeWebhookEventScalarFieldEnum)[keyof typeof StripeWebhookEventScalarFieldEnum]
 
 
 export const SortOrder = {

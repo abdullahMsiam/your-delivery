@@ -11,6 +11,7 @@ import asyncHandler from "./utils/asyncHandler.js";
 import { paymentController } from "./modules/payment/payment.controller.js";
 import { notificationRouter } from "./modules/notification/notification.route.js";
 import { agentRouter } from "./modules/agent/agent.route.js";
+import helmet from "helmet";
 
 const app = express();
 
@@ -33,12 +34,15 @@ app.use(
   }),
 );
 
+
 app.post(
   "/api/v1/payments/webhook",
   express.raw({ type: "application/json" }),
   asyncHandler(paymentController.handleStripeWebhook)
 );
 
+
+app.use(helmet());
 
 app.use(express.json());
 

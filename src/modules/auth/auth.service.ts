@@ -207,14 +207,40 @@ const refreshAccessToken = async (refreshToken: string) => {
     throw new AppError(403, "Your account is not active");
   }
 
+  // Generate new refresh token
+  const newRefreshToken = crypto.randomBytes(64).toString("hex");
+  const newTokenHash = hashRefreshToken(newRefreshToken);
+
+  const newExpiresAt = new Date();
+  newExpiresAt.setDate(newExpiresAt.getDate() + 7);
+
+  // Generate new access token
   const accessToken = jwtUtils.generateAccessToken({
     userId: storedToken.user.id,
     email: storedToken.user.email,
     role: storedToken.user.role,
   });
 
+  // Rotate refresh token
+  await prisma.$transaction([
+    prisma.refreshToken.delete({
+      where: {
+        id: storedToken.id,
+      },
+    }),
+
+    prisma.refreshToken.create({
+      data: {
+        tokenHash: newTokenHash,
+        userId: storedToken.user.id,
+        expiresAt: newExpiresAt,
+      },
+    }),
+  ]);
+
   return {
     accessToken,
+    refreshToken: newRefreshToken,
   };
 };
 

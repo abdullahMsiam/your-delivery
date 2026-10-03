@@ -88,6 +88,37 @@ const getPaymentByDelivery = async (customerId: string, deliveryId: string) => {
 };
 
 const handleStripeWebhook = async (event: Stripe.Event) => {
+  // Check if this Stripe event was already processed
+  const existingEvent = await prisma.stripeWebhookEvent.findUnique({
+    where: {
+      eventId: event.id,
+    },
+  });
+
+  if (existingEvent) {
+    console.log(`Stripe webhook already processed: ${event.id}`);
+    return;
+  }
+
+  // Record the event first.
+  // eventId is UNIQUE, so duplicate events cannot be processed twice.
+  try {
+    await prisma.stripeWebhookEvent.create({
+      data: {
+        eventId: event.id,
+        eventType: event.type,
+      },
+    });
+  } catch (error: any) {
+    // Prisma P2002 = unique constraint violation
+    if (error?.code === "P2002") {
+      console.log(`Stripe webhook already processed: ${event.id}`);
+      return;
+    }
+
+    throw error;
+  }
+
   switch (event.type) {
     case "payment_intent.succeeded": {
       const paymentIntent = event.data.object as Stripe.PaymentIntent;
@@ -113,6 +144,11 @@ const handleStripeWebhook = async (event: Stripe.Event) => {
         break;
       }
 
+      // Prevent unnecessary update if payment is already paid
+      if (payment.status === "PAID") {
+        break;
+      }
+
       await prisma.payment.update({
         where: {
           id: payment.id,
@@ -131,7 +167,10 @@ const handleStripeWebhook = async (event: Stripe.Event) => {
           message: `Payment for parcel ${payment.delivery.trackingId} was successful.`,
         });
       } catch (error) {
-        console.error("Failed to create payment success notification:", error);
+        console.error(
+          "Failed to create payment success notification:",
+          error,
+        );
       }
 
       break;
@@ -161,6 +200,11 @@ const handleStripeWebhook = async (event: Stripe.Event) => {
         break;
       }
 
+      // Prevent unnecessary update if payment is already failed
+      if (payment.status === "FAILED") {
+        break;
+      }
+
       await prisma.payment.update({
         where: {
           id: payment.id,
@@ -178,7 +222,10 @@ const handleStripeWebhook = async (event: Stripe.Event) => {
           message: `Payment for parcel ${payment.delivery.trackingId} failed.`,
         });
       } catch (error) {
-        console.error("Failed to create payment failure notification:", error);
+        console.error(
+          "Failed to create payment failure notification:",
+          error,
+        );
       }
 
       break;

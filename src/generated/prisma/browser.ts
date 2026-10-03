@@ -52,3 +52,8 @@ export type Payment = Prisma.PaymentModel
  * 
  */
 export type Notification = Prisma.NotificationModel
+/**
+ * Model StripeWebhookEvent
+ * 
+ */
+export type StripeWebhookEvent = Prisma.StripeWebhookEventModel
