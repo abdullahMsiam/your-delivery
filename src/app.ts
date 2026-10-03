@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import { prisma } from "./lib/prisma.js";
 import { userRouter } from "./modules/user/user.route.js";
 import { globalErrorHandler } from "./middlewares/error.middleware.js";
@@ -12,6 +13,25 @@ import { notificationRouter } from "./modules/notification/notification.route.js
 import { agentRouter } from "./modules/agent/agent.route.js";
 
 const app = express();
+
+const allowedOrigins = (process.env.CORS_ORIGINS ?? "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
+      callback(null, false);
+    },
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 
 app.post(
   "/api/v1/payments/webhook",

@@ -1,11 +1,10 @@
 # Your Delivery Backend — Frontend API Guide
 
-This guide describes the HTTP API as it is implemented in this repository. It is intended to be sufficient for a frontend developer to integrate the customer, administrator, and payment flows without reading the backend source.
+This guide describes the HTTP API as it is implemented in this repository. It is intended to be sufficient for a frontend developer to integrate the customer, agent, administrator, and payment flows without reading the backend source.
 
 > **Important implementation notes**
 >
-> - The API currently does not enable CORS. A browser frontend hosted on a different origin may be blocked by the browser even when requests work in Postman. The frontend needs a same-origin proxy, or the backend must be configured to allow the frontend origin.
-> - The agent router exists in source but is not mounted by `src/app.ts`. Agent routes listed in this guide are therefore **not currently reachable**. See [Agent API availability](#agent-api-availability).
+> - CORS is configured using the `CORS_ORIGINS` environment variable. Add the exact browser origin(s) used by the frontend to the backend environment, then restart/redeploy the backend. Requests without an `Origin` header (such as typical server-to-server/Postman requests) are allowed.
 > - The actual health endpoint is `/api/health` (not `/api/v1/health`).
 > - Some mutation handlers do not invoke their defined Zod schemas. Validate all request data in the frontend, and do not rely on the backend to reject every malformed body.
 
@@ -288,18 +287,18 @@ Returns `data` with `deliveryId`, `trackingId`, and chronological `history`. Eac
 
 Request: `{ "note": "Optional reason, up to 500 characters" }`; an empty body is also accepted. Only `PENDING` and `ASSIGNED` deliveries can be cancelled by the customer. The response `data` contains the updated delivery, addresses, payment, and status history. Cancellation does not automatically update/refund the payment record in the current implementation.
 
-## 5. Agent API availability
+## 5. Agent API
 
-The code defines the following agent router endpoints, but `src/app.ts` does not mount that router. Consequently there is **no working HTTP path for these endpoints in the current server**, regardless of the URL a frontend tries. The expected router prefix by convention is `/api/v1/agents`, but that prefix is not registered either.
+The agent router is mounted in `src/app.ts` under `/api/v1/agent`. All endpoints require a bearer access token and the `AGENT` role.
 
-| Intended method and route | Access | Purpose |
+| Method and route | Access | Purpose |
 |---|---|---|
-| `GET /agents/me` | Agent | Agent profile |
-| `GET /agents/statistics` | Agent | Counts by delivery state and success rate |
-| `GET /agents/deliveries` | Agent | Paginated assigned deliveries (`page`, `limit`) |
-| `PATCH /agents/deliveries/{id}/status` | Assigned agent | Advance delivery status |
+| `GET /agent/me` | Agent | Agent profile |
+| `GET /agent/statistics` | Agent | Counts by delivery state and success rate |
+| `GET /agent/deliveries` | Agent | Paginated assigned deliveries (`page`, `limit`) |
+| `PATCH /agent/deliveries/{id}/status` | Assigned agent | Advance delivery status |
 
-The contract in the route module expects status updates with `{ "status": "PICKED_UP", "note": "Optional note" }`. Allowed updates are `ASSIGNED → PICKED_UP → IN_TRANSIT → OUT_FOR_DELIVERY → DELIVERED` or `FAILED` from `OUT_FOR_DELIVERY`. Agent list results include customer contact details, addresses, and a payment summary. The missing router mount must be fixed before frontend integration can use these operations.
+The status endpoint expects `{ "status": "PICKED_UP", "note": "Optional note" }`. Allowed updates are `ASSIGNED → PICKED_UP → IN_TRANSIT → OUT_FOR_DELIVERY → DELIVERED` or `FAILED` from `OUT_FOR_DELIVERY`. Agent list results include customer contact details, addresses, and a payment summary.
 
 ## 6. Admin API
 
@@ -417,7 +416,7 @@ Create the delivery with `paymentMethod: "COD"`. Once the delivery is `DELIVERED
 
 Request body: none required. The authenticated agent must be assigned to the delivery; it must be delivered and have a COD payment that is not already paid, cancelled, or refunded. Success response `data` contains payment `id`, `deliveryId`, `method`, `status`, `amount`, `paidAt`, `createdAt`, and `updatedAt`.
 
-This route is registered, but depends on the agent login and delivery workflows. The currently unmounted agent router prevents an agent from performing the other agent actions through this API.
+This route is registered under the payments API and requires an authenticated agent assigned to the delivered COD parcel.
 
 ### Notifications
 
@@ -487,11 +486,12 @@ Backend deployment requires the following environment variables:
 | `STRIPE_CURRENCY` | Stripe currency code; defaults to `usd` |
 | `PORT` | HTTP server port; defaults to `5000` |
 | `NODE_ENV` | Runtime environment |
+| `CORS_ORIGINS` | Comma-separated exact browser origins, e.g. `http://localhost:5173,https://app.example.com`; origins must not include a path |
 
 Before release, confirm with the backend owner:
 
-- The agent router is mounted and the chosen route prefix is published.
-- CORS allows the deployed frontend origin (or a same-origin proxy is configured).
+- The deployed backend includes the agent router at `/api/v1/agent`.
+- `CORS_ORIGINS` includes the exact deployed frontend origin and the local development origin as needed. An origin includes scheme, hostname, and port, but no URL path or trailing slash.
 - The production base URL and token expiry are current.
 - Stripe webhook delivery is configured and tested.
 - Delivery charges, `codAmount`, and the amount charged/collected are consistent with the intended product rules.
@@ -521,6 +521,10 @@ Before release, confirm with the backend owner:
 | `GET` | `/deliveries/track/{trackingId}` | Public |
 | `GET` | `/deliveries/{id}/history` | Customer |
 | `PATCH` | `/deliveries/{id}/cancel` | Customer |
+| `GET` | `/agent/me` | Agent |
+| `GET` | `/agent/statistics` | Agent |
+| `GET` | `/agent/deliveries` | Agent |
+| `PATCH` | `/agent/deliveries/{id}/status` | Assigned agent |
 | `GET` | `/admin/dashboard` | Admin |
 | `GET` | `/admin/deliveries` | Admin |
 | `GET` | `/admin/deliveries/{id}` | Admin |
@@ -541,5 +545,3 @@ Before release, confirm with the backend owner:
 | `GET` | `/notifications/unread-count` | Authenticated |
 | `PATCH` | `/notifications/{id}/read` | Authenticated |
 | `PATCH` | `/notifications/read-all` | Authenticated |
-
-The agent module's four route definitions are intentionally excluded from the callable endpoint index because the router is not mounted; details are in [Agent API availability](#agent-api-availability).
